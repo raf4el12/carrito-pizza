@@ -1,14 +1,9 @@
 import prisma from '../../../prisma/context.js'
-
-const includeVariant = {
-  Producto: { select: { id_producto: true, nombre: true } },
-  Tamano: { select: { id_tamano: true, nombre: true } },
-  Tipo_Masa: { select: { id_tipo_masa: true, nombre: true } },
-}
+import { VariantDTO } from './variants.dto.js'
 
 const getVariantsProducts = async () => {
   const variants = await prisma.variantes_producto.findMany({
-    include: includeVariant,
+    select: VariantDTO,
     orderBy: [{ activo: 'desc' }, { id_variante: 'desc' }],
   })
 
@@ -18,7 +13,7 @@ const getVariantsProducts = async () => {
 const getVariantProductById = async (id) => {
   const variant = await prisma.variantes_producto.findUnique({
     where: { id_variante: Number.parseInt(id, 10) },
-    include: includeVariant,
+    select: VariantDTO,
   })
 
   return variant
@@ -43,7 +38,7 @@ const createVariantProduct = async (data) => {
       sku,
       activo,
     },
-    include: includeVariant,
+    select: VariantDTO,
   })
 
   return variant
@@ -74,7 +69,7 @@ const updateVariantProduct = async (id, data) => {
   const variant = await prisma.variantes_producto.update({
     where: { id_variante: Number.parseInt(id, 10) },
     data: updateData,
-    include: includeVariant,
+    select: VariantDTO,
   })
 
   return variant
