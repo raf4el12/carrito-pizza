@@ -5,6 +5,8 @@ import productsRoutes from './modules/products/products.router.js'
 import categoriesRoutes from './modules/categories/categories.routes.js'
 import sizesRoutes from './modules/sizes/sizes.routes.js'
 import variantsRoutes from './modules/variantsProducts/variants.routes.js'
+import ingredientsRoutes from './modules/ingredients/ingredients.routes.js'
+
 
 
 const router = express.Router()
@@ -15,5 +17,5 @@ router.use('/products', productsRoutes)
 router.use('/categories', categoriesRoutes)
 router.use('/sizes', sizesRoutes)
 router.use('/variants', variantsRoutes)
-
+router.use('/ingredients', ingredientsRoutes)
 export default router
