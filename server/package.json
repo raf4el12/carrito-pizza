@@ -1,0 +1,39 @@
+{
+  "name": "carrito-pizza",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "prisma": "prisma --schema=prisma/schema.prisma",
+    "migrate": "prisma migrate dev --name init --schema=prisma/schema.prisma",
+    "generate": "prisma generate --schema=prisma/schema.prisma",
+    "reset": "prisma migrate reset --schema=prisma/schema.prisma",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pull": "prisma db pull --schema=prisma/schema.prisma",
+    "format": "biome format --write src",
+    "lint": "biome check --write src"
+  },
+  "keywords": [],
+  "author": "RAFAEL",
+  "license": "ISC",
+  "description": "API para la aplicación de delivery de pizzas",
+  "dependencies": {
+    "@prisma/client": "^6.18.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "es-toolkit": "^1.39.4",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.18.0"
+  }
+}
