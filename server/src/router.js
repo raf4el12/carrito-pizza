@@ -7,6 +7,7 @@ import sizesRoutes from './modules/sizes/sizes.routes.js'
 import variantsRoutes from './modules/variantsProducts/variants.routes.js'
 import ingredientsRoutes from './modules/ingredients/ingredients.routes.js'
 import carritoRoutes from './modules/carrito/carrito.routes.js'
+import pedidosRoutes from './modules/pedidos/pedidos.routes.js'
 
 
 
@@ -20,5 +21,6 @@ router.use('/sizes', sizesRoutes)
 router.use('/variants', variantsRoutes)
 router.use('/ingredients', ingredientsRoutes)
 router.use('/carrito', carritoRoutes)
+router.use('/pedidos', pedidosRoutes)
 
 export default router
