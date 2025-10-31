@@ -1,31 +1,39 @@
 import * as carritoUseCase from './carrito.usecase.js'
 
-const getCarrito = async (req, res) => {
-    const carrito = await carritoUseCase.getCarrito()
-    res.status(200).json(carrito)
-}
-
-const getCarritoById = async (req, res) => {
-    const { id } = req.params
-    const carrito = await carritoUseCase.getCarritoById(id)
-    res.status(200).json(carrito)
+const getCarritoByClienteId = async (req, res) => {
+  const { id_cliente } = req.params
+  const carrito = await carritoUseCase.getCarritoByClienteId(id_cliente)
+  res.status(200).json(carrito)
 }
 
 const createCarrito = async (req, res) => {
-    const carrito = await carritoUseCase.createCarrito(req.body)
-    res.status(201).json(carrito)
+  const carrito = await carritoUseCase.createCarritoItem(req.body)
+  res.status(201).json(carrito)
 }
 
 const updateCarrito = async (req, res) => {
-    const { id } = req.params
-    const carrito = await carritoUseCase.updateCarrito(id, req.body)
-    res.status(200).json(carrito)
+  const { id } = req.params
+  const { cantidad } = req.body
+  const carrito = await carritoUseCase.updateCarritoCantidad(id, cantidad)
+  res.status(200).json(carrito)
 }
 
 const deleteCarrito = async (req, res) => {
-    const { id } = req.params
-    const carrito = await carritoUseCase.deleteCarrito(id)
-    res.status(200).json(carrito)
+  const { id } = req.params
+  await carritoUseCase.deleteCarritoItem(id)
+  res.status(200).json({ message: 'Item eliminado del carrito' })
 }
 
-export { getCarrito, getCarritoById, createCarrito, updateCarrito, deleteCarrito }
+const clearCarritoByClienteId = async (req, res) => {
+  const { id_cliente } = req.params
+  const result = await carritoUseCase.clearCarritoByClienteId(id_cliente)
+  res.status(200).json(result)
+}
+
+export { 
+  getCarritoByClienteId, 
+  createCarrito, 
+  updateCarrito, 
+  deleteCarrito, 
+  clearCarritoByClienteId 
+}

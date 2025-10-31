@@ -1,4 +1,4 @@
-import prisma from '../../../prisma/context.js'
+import prisma from '../../../../prisma/context.js'
 import { HttpError } from '../../../shared/shared.http.error.js'
 import { parseId } from './pedidos.parsers.js'
 
