@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* CSS Variables for custom colors */
+:root {
+  --color-primary: #000000;
+  --color-secondary: #6b7280;
+  --color-muted: #9ca3af;
+  --color-muted-foreground: #6b7280;
+  --color-card: #ffffff;
+  --color-card-foreground: #1f2937;
+  --color-border: #e5e7eb;
+}
+
+/* Material-UI overrides */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Custom utilities for shadcn/ui-like classes */
+.text-muted-foreground {
+  color: var(--color-muted-foreground);
+}
+
+.bg-card {
+  background-color: var(--color-card);
+}
+
+.text-card-foreground {
+  color: var(--color-card-foreground);
+}
