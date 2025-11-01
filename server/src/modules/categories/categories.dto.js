@@ -7,5 +7,6 @@ export const CategoryDTO = {
 export const CategoryListDTO = {
   id_categoria: true,
   nombre_categoria: true,
+  descripcion: true,
 }
 

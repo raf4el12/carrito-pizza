@@ -109,20 +109,20 @@ const SignupCard = () => {
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="password">
+          <label className="block text-sm font-medium mb-1" htmlFor="contraseña">
             Contraseña
           </label>
           <input
-            id="password"
+            id="contraseña"
             type="password"
-            {...register('password')}
+            {...register('contraseña')}
             className={`w-full rounded-md border px-3 py-2 bg-gray-50 ${
-              errors.password ? 'border-red-400' : 'border-gray-300'
+              errors.contraseña ? 'border-red-400' : 'border-gray-300'
             }`}
             placeholder="Contraseña"
           />
-          {errors.password && (
-            <FormFieldError>{errors.password.message}</FormFieldError>
+          {errors.contraseña && (
+            <FormFieldError>{errors.contraseña.message}</FormFieldError>
           )}
         </div>
         <button
