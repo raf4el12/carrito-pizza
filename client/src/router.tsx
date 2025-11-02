@@ -51,6 +51,12 @@ const CategoriesListTablePage = lazy(
       './pages/categories/categoriesListTablePage' /* webpackChunkName: "categories-page" */
     )
 )
+const UsersListPage = lazy(
+  () =>
+    import(
+      './pages/admin/UsersListPage' /* webpackChunkName: "users-page" */
+    )
+)
 
 const router = createBrowserRouter([
   {
@@ -95,6 +101,10 @@ const router = createBrowserRouter([
           {
             path: 'categorias',
             element: <CategoriesListTablePage />,
+          },
+          {
+            path: 'usuarios',
+            element: <UsersListPage />,
           },
         ],
       },
