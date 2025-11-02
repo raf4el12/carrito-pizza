@@ -1,6 +1,7 @@
 import { Close as CloseIcon, Edit as EditIcon } from '@mui/icons-material'
 import {
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -115,7 +116,7 @@ const CategoryDetailDrawer = ({
 
         {/* Actions */}
         <Box sx={{ pt: 3 }}>
-          <IconButton
+          <Button
             variant="outlined"
             onClick={onClose}
             fullWidth
@@ -126,7 +127,7 @@ const CategoryDetailDrawer = ({
             }}
           >
             Cerrar
-          </IconButton>
+          </Button>
         </Box>
       </Box>
     </Drawer>
