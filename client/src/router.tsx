@@ -57,6 +57,12 @@ const UsersListPage = lazy(
       './pages/admin/UsersListPage' /* webpackChunkName: "users-page" */
     )
 )
+const ProductsPage = lazy(
+  () =>
+    import(
+      './pages/products/ProductsPage' /* webpackChunkName: "products-page" */
+    )
+)
 
 const router = createBrowserRouter([
   {
@@ -105,6 +111,10 @@ const router = createBrowserRouter([
           {
             path: 'usuarios',
             element: <UsersListPage />,
+          },
+          {
+            path: 'productos',
+            element: <ProductsPage />,
           },
         ],
       },
