@@ -43,7 +43,6 @@ const CategoryListTable = ({
   categoryData,
   onEdit,
   onDelete,
-  onAdd,
 }: CategoryListTableProps) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
