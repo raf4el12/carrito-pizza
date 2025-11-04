@@ -13,72 +13,42 @@ const getProductById = async (id) => {
 }
 
 const createProduct = async (data) => {
-    const {
-        nombre,
-        descripcion,
-        imagen_url,
-        id_categoria,       
-        categoriaNombre,    
-        estado,             
-    } = data
+  const { nombre, descripcion, imagen_url, id_categoria, estado = 'activo' } = data
 
-    const payload = {
-        nombre,
-        descripcion,
-        imagen_url,
-        estado,
-    }
+  if (!id_categoria) {
+    throw new Error('La categoría es obligatoria')
+  }
 
-    if (id_categoria) {
-        payload.id_categoria = Number(id_categoria)
-    } else if (categoriaNombre) {
-        payload.Categoria = {
-            connectOrCreate: {
-                where: { nombre_categoria: categoriaNombre },
-                create: { nombre_categoria: categoriaNombre },
-            },
-        }
-    } else {
-        throw new Error('Debe enviar id_categoria o categoriaNombre')
-    }
+  const payload = {
+    nombre,
+    descripcion: descripcion || null,
+    imagen_url: imagen_url || null,
+    estado,
+    id_categoria: Number(id_categoria),
+  }
 
-    return await prisma.productos.create({ data: payload, select: ProductDTO })
+  return await prisma.productos.create({ data: payload, select: ProductDTO })
 }
+
 
 const updateProduct = async (id, data) => {
-    const {
-        nombre,
-        descripcion,
-        imagen_url,
-        id_categoria,
-        categoriaNombre,
-        estado,
-    } = data
+  const { nombre, descripcion, imagen_url, id_categoria, estado } = data
 
-    const payload = {
-        nombre,
-        descripcion,
-        imagen_url,
-        estado,
-    }
+  const payload = {}
 
-    if (id_categoria) {
-        payload.id_categoria = Number(id_categoria)
-    } else if (categoriaNombre) {
-        payload.Categoria = {
-            connectOrCreate: {
-                where: { nombre_categoria: categoriaNombre },
-                create: { nombre_categoria: categoriaNombre },
-            },
-        }
-    }
+  if (nombre !== undefined) payload.nombre = nombre
+  if (descripcion !== undefined) payload.descripcion = descripcion
+  if (imagen_url !== undefined) payload.imagen_url = imagen_url
+  if (estado !== undefined) payload.estado = estado
+  if (id_categoria !== undefined) payload.id_categoria = Number(id_categoria)
 
-    return await prisma.productos.update({ 
-        where: { id_producto: Number(id) },
-        data: payload,
-        select: ProductDTO,
-    })
+  return await prisma.productos.update({
+    where: { id_producto: Number(id) },
+    data: payload,
+    select: ProductDTO,
+  })
 }
+
 
 const deleteProduct = async (id) => {
   return await prisma.productos.delete({ where: { id_producto: Number(id) }, select: { id_producto: true } })

@@ -14,17 +14,18 @@ import {
 import classnames from 'classnames'
 import { useState } from 'react'
 import Card from '@mui/material/Card'
+import Chip from '@mui/material/Chip'
 import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import TablePagination from '@mui/material/TablePagination'
 import Typography from '@mui/material/Typography'
 import DebouncedInput from '../../commons/DebouncedInput'
-import type { Category } from '../../../types/categories/categories.schema'
+import type { Product } from '../../../types/products/products.schema'
 import tableStyles from '../../../styles/table.module.css'
 
 // Column helper
-const columnHelper = createColumnHelper<Category>()
+const columnHelper = createColumnHelper<Product>()
 
 // Simple filter function
 const simpleFilter = (row: any, columnId: string, value: string) => {
@@ -32,24 +33,37 @@ const simpleFilter = (row: any, columnId: string, value: string) => {
   return String(cellValue).toLowerCase().includes(value.toLowerCase())
 }
 
-interface CategoryListTableProps {
-  categoryData?: Category[]
-  onEdit?: (category: Category) => void
-  onDelete?: (category: Category) => void
-  onAdd?: () => void
+// Helper to get status color
+const getStatusColor = (estado: string) => {
+  switch (estado) {
+    case 'activo':
+      return 'success'
+    case 'inactivo':
+      return 'error'
+    default:
+      return 'default'
+  }
 }
 
-const CategoryListTable = ({
-  categoryData,
+interface ProductListTableProps {
+  productData?: Product[]
+  onEdit?: (product: Product) => void
+  onDelete?: (product: Product) => void
+  onView?: (product: Product) => void
+}
+
+const ProductListTable = ({
+  productData,
   onEdit,
   onDelete,
-}: CategoryListTableProps) => {
+  onView,
+}: ProductListTableProps) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
-  const data = categoryData ?? []
+  const data = productData ?? []
 
-  const columns: ColumnDef<Category, any>[] = [
+  const columns: ColumnDef<Product, any>[] = [
     {
       id: 'select',
       header: ({ table }: { table: any }) => (
@@ -72,28 +86,55 @@ const CategoryListTable = ({
         />
       ),
     },
-    columnHelper.accessor('id_categoria', {
+    columnHelper.accessor('id_producto', {
       header: 'ID',
       cell: ({ row }: { row: any }) => (
         <Typography color="text.primary" className="font-medium">
-          {row.original.id_categoria}
+          {row.original.id_producto}
         </Typography>
       ),
     }),
-    columnHelper.accessor('nombre_categoria', {
+    columnHelper.accessor('nombre', {
       header: 'Nombre',
       cell: ({ row }: { row: any }) => (
         <Typography color="text.primary" className="font-medium">
-          {row.original.nombre_categoria}
+          {row.original.nombre}
+        </Typography>
+      ),
+    }),
+    columnHelper.accessor('Categoria', {
+      header: 'Categoría',
+      cell: ({ row }: { row: any }) => (
+        <Typography variant="body2" color="text.secondary">
+          {row.original.Categoria?.nombre_categoria || 'Sin categoría'}
         </Typography>
       ),
     }),
     columnHelper.accessor('descripcion', {
       header: 'Descripción',
       cell: ({ row }: { row: any }) => (
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            maxWidth: '300px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
           {row.original.descripcion || 'Sin descripción'}
         </Typography>
+      ),
+    }),
+    columnHelper.accessor('estado', {
+      header: 'Estado',
+      cell: ({ row }: { row: any }) => (
+        <Chip
+          label={row.original.estado}
+          color={getStatusColor(row.original.estado)}
+          size="small"
+        />
       ),
     }),
     {
@@ -101,6 +142,18 @@ const CategoryListTable = ({
       header: 'Acciones',
       cell: ({ row }: { row: any }) => (
         <div className="flex items-center gap-1">
+          {onView && (
+            <IconButton
+              size="medium"
+              onClick={() => onView?.(row.original)}
+              title="Ver"
+            >
+              <i
+                className="ri-eye-line"
+                style={{ fontSize: '24px', color: '#5271FF' }}
+              />
+            </IconButton>
+          )}
           <IconButton
             size="medium"
             onClick={() => onEdit?.(row.original)}
@@ -165,20 +218,9 @@ const CategoryListTable = ({
             onChange={(value: string | number) =>
               setGlobalFilter(String(value))
             }
-            placeholder="Buscar categoría..."
+            placeholder="Buscar producto..."
             className="max-sm:is-full"
           />
-          <div className="flex items-center max-sm:flex-col gap-4 max-sm:is-full is-auto">
-            {/* <Button
-              variant="contained"
-              onClick={onAdd}
-              startIcon={<i className="ri-add-line" />}
-              className="max-sm:is-full is-auto"
-              disabled={!onAdd}
-            >
-              Agregar Categoría
-            </Button> */}
-          </div>
         </div>
         <div className="overflow-x-auto">
           <table className={tableStyles.table}>
@@ -275,4 +317,4 @@ const CategoryListTable = ({
   )
 }
 
-export default CategoryListTable
+export default ProductListTable
