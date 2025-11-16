@@ -41,6 +41,7 @@ const maestros: MenuItem[] = [
   { label: 'Usuarios', icon: <PeopleIcon />, href: '/admin/usuarios' },
   { label: 'Cupones', icon: <LocalOfferIcon />, href: '/admin/cupones' },
   { label: 'Ingredientes', icon: <RestaurantIcon />, href: '/admin/ingredientes' },
+  { label: 'Tamaños', icon: <RestaurantIcon />, href: '/admin/tamanos' },
 ]
 
 export default function SidebarBase() {
@@ -77,7 +78,6 @@ export default function SidebarBase() {
     return <LoadingPage />
   }
 
-  // Verificar que el usuario es administrador
   if (user && user.rol !== 'administrador') {
     navigate('/')
     return <LoadingPage />

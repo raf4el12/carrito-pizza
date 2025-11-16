@@ -7,6 +7,8 @@ const TITLES: Record<string, string> = {
   '/admin/pedidos': 'Gestión de Pedidos',
   '/admin/productos': 'Gestión de Productos',
   '/admin/categorias': 'Gestión de Categorías',
+  '/admin/tamanos': 'Gestión de Tamaños',
+  '/admin/ingredientes': 'Gestión de Ingredientes',
   '/admin/usuarios': 'Gestión de Usuarios',
   '/admin/cupones': 'Gestión de Cupones',
   '/admin/settings': 'Configuración',
