@@ -21,6 +21,7 @@ import {
 import type { Product } from '../../../types/products/products.schema'
 import { useProductEditHook } from '../hooks/useProductEditHook'
 import { useCategories } from '../../../hook/categories/useCategories'
+import { resolveImageUrl } from '../../../shared/utils/media'
 
 interface ProductEditDrawerProps {
   product: Product | null
@@ -43,6 +44,7 @@ const ProductEditDrawer = ({ product, onBack, onSuccess }: ProductEditDrawerProp
   } = useProductEditHook({ product, onBack, onSuccess })
 
   const { data: categories, isLoading: loadingCategories } = useCategories()
+  const previewImage = resolveImageUrl(formData.imagen_url)
 
   if (!hasProduct) return null
 
@@ -95,11 +97,11 @@ const ProductEditDrawer = ({ product, onBack, onSuccess }: ProductEditDrawerProp
           <Stack spacing={3}>
             {/* Product Image Preview */}
             <Card sx={{ overflow: 'hidden' }}>
-              {formData.imagen_url ? (
+              {previewImage ? (
                 <CardMedia
                   component="img"
                   height="300"
-                  image={formData.imagen_url}
+                  image={previewImage}
                   alt="Vista previa"
                   sx={{
                     objectFit: 'cover',

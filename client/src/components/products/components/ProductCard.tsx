@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import type { FC } from 'react'
 import type { Product } from '../../../types/products/products.schema'
+import { resolveImageUrl } from '../../../shared/utils/media'
 
 interface ProductCardProps {
   item: Product
@@ -36,6 +37,8 @@ const ProductCard: FC<ProductCardProps> = ({ item, onEdit, onDelete, onView }) =
   const handleView = () => onView?.(item)
   const description = item.descripcion?.trim() ? item.descripcion : 'Sin descripción'
 
+  const imageUrl = resolveImageUrl(item.imagen_url)
+
   return (
     <Card
       sx={{
@@ -52,11 +55,11 @@ const ProductCard: FC<ProductCardProps> = ({ item, onEdit, onDelete, onView }) =
       variant="outlined"
     >
       {/* Imagen del producto */}
-      {item.imagen_url ? (
+      {imageUrl ? (
         <CardMedia
           component="img"
           height="200"
-          image={item.imagen_url}
+          image={imageUrl}
           alt={item.nombre}
           sx={{
             objectFit: 'cover',
