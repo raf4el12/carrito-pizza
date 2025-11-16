@@ -21,6 +21,7 @@ import {
 import { useProductAddHook } from '../hooks/useProductAddHook'
 import { useCategories } from '../../../hook/categories/useCategories'
 import type { Product } from '../../../types/products/products.schema'
+import { resolveImageUrl } from '../../../shared/utils/media'
 
 interface ProductAddDrawerProps {
   onBack: () => void
@@ -41,6 +42,7 @@ const ProductAddDrawer = ({ onBack, onSuccess }: ProductAddDrawerProps) => {
   } = useProductAddHook({ onBack, onSuccess })
 
   const { data: categories, isLoading: loadingCategories } = useCategories()
+  const previewImage = resolveImageUrl(formData.imagen_url)
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -87,11 +89,11 @@ const ProductAddDrawer = ({ onBack, onSuccess }: ProductAddDrawerProps) => {
           <Stack spacing={3}>
             {/* Product Image Preview */}
             <Card sx={{ overflow: 'hidden' }}>
-              {formData.imagen_url ? (
+              {previewImage ? (
                 <CardMedia
                   component="img"
                   height="300"
-                  image={formData.imagen_url}
+                  image={previewImage}
                   alt="Vista previa"
                   sx={{
                     objectFit: 'cover',

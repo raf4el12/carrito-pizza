@@ -1,8 +1,8 @@
 import prisma from '../../../prisma/context.js'
-import { ProductDTO, ProductListDTO } from './products.dto.js'
+import { ProductDTO } from './products.dto.js'
 
 const getProducts = async () => {
-  return await prisma.productos.findMany({ select: ProductListDTO })
+  return await prisma.productos.findMany({ select: ProductDTO })
 }
 
 const getProductById = async (id) => {

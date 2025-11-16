@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from 'react'
 import type { ChipProps } from '@mui/material/Chip'
 import type { Product } from '../../../types/products/products.schema'
+import { resolveImageUrl } from '../../../shared/utils/media'
 
 interface UseProductDetailHookParams {
   product: Product | null
@@ -40,9 +41,13 @@ export const useProductDetailHook = ({ product, onEdit }: UseProductDetailHookPa
     return product?.Categoria?.nombre_categoria || 'Sin categoría'
   }, [product])
 
+  const imageUrl = useMemo(() => {
+    return resolveImageUrl(product?.imagen_url ?? null)
+  }, [product?.imagen_url])
+
   const hasImage = useMemo(() => {
-    return !!product?.imagen_url
-  }, [product])
+    return !!imageUrl
+  }, [imageUrl])
 
   const handleEdit = useCallback(() => {
     if (!product) return
@@ -55,6 +60,7 @@ export const useProductDetailHook = ({ product, onEdit }: UseProductDetailHookPa
     statusColor,
     categoryName,
     hasImage,
+    imageUrl,
     handleEdit,
   }
 }

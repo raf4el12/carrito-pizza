@@ -29,6 +29,7 @@ const ProductDetailPanel = ({ product, onBack, onEdit }: ProductDetailPanelProps
     statusColor,
     categoryName,
     hasImage,
+    imageUrl,
     handleEdit,
   } = useProductDetailHook({ product, onEdit })
 
@@ -92,7 +93,7 @@ const ProductDetailPanel = ({ product, onBack, onEdit }: ProductDetailPanelProps
               <CardMedia
                 component="img"
                 height="400"
-                image={product.imagen_url!}
+                image={imageUrl}
                 alt={product.nombre}
                 sx={{
                   objectFit: 'cover',
