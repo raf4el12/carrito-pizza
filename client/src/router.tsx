@@ -69,6 +69,9 @@ const IngredientsPage = lazy(
       './pages/ingredients/IngredientsPage' /* webpackChunkName: "ingredients-page" */
     )
 )
+const SizesPage = lazy(
+  () => import('./pages/sizes/SizesPage' /* webpackChunkName: "sizes-page" */)
+)
 
 const router = createBrowserRouter([
   {
@@ -125,6 +128,10 @@ const router = createBrowserRouter([
           {
             path: 'ingredientes',
             element: <IngredientsPage />,
+          },
+          {
+            path: 'tamanos',
+            element: <SizesPage />,
           },
         ],
       },
