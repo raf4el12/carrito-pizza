@@ -40,6 +40,7 @@ const maestros: MenuItem[] = [
   { label: 'Categorías', icon: <CategoryIcon />, href: '/admin/categorias' },
   { label: 'Usuarios', icon: <PeopleIcon />, href: '/admin/usuarios' },
   { label: 'Cupones', icon: <LocalOfferIcon />, href: '/admin/cupones' },
+  { label: 'Ingredientes', icon: <RestaurantIcon />, href: '/admin/ingredientes' },
 ]
 
 export default function SidebarBase() {

@@ -8,14 +8,17 @@ export const ingredientCreateSchema = z.object({
 })
 
 export const ingredientUpdateSchema = z.object({
-    nombre: z.string().min(1, 'El nombre del ingrediente es obligatorio').optional(),
-    precio_adicional: z.number().min(0, 'El precio del ingrediente es obligatorio').optional(),
-    stock_disponible: z.number().min(0, 'El stock del ingrediente es obligatorio').optional(),
-    activo: z.boolean().optional(),
+  nombre: z.string().min(1, 'El nombre del ingrediente es obligatorio').optional(),
+  precio_adicional: z.number().min(0, 'El precio del ingrediente es obligatorio').optional(),
+  stock_disponible: z.number().min(0, 'El stock del ingrediente es obligatorio').optional(),
+  activo: z.boolean().optional(),
 })
 
 export type IngredientCreateDto = z.infer<typeof ingredientCreateSchema>
 export type IngredientUpdateDto = z.infer<typeof ingredientUpdateSchema>
+
+export const UpdateIngredientSchema = ingredientUpdateSchema
+export type UpdateIngredientInput = IngredientUpdateDto
 
 export enum IngredientStatus {
     ACTIVO = 'activo',
@@ -35,3 +38,6 @@ export interface IngredientListItem {
     nombre: string
     activo: boolean
 }
+
+export const CreateIngredientSchema = ingredientCreateSchema
+export type CreateIngredientInput = IngredientCreateDto
