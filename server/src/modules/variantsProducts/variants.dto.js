@@ -7,7 +7,7 @@ export const VariantDTO = {
   sku: true,
   activo: true,
   Producto: { select: { id_producto: true, nombre: true } },
-  Tamano: { select: { id_tamano: true, nombre: true } },
+  Tamano: { select: { id_tamano: true, nombre: true, precio_base: true } },
   Tipo_Masa: { select: { id_tipo_masa: true, nombre: true } },
 }
 
