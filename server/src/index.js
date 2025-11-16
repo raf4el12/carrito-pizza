@@ -1,6 +1,4 @@
 import 'dotenv/config'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
@@ -10,12 +8,7 @@ import { authBearer } from './middlewares/auth.js'
 import errorMiddleware from './middlewares/error.js'
 import router from './router.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 const app = express()
-
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 app.use(cookieParser())
 app.use(

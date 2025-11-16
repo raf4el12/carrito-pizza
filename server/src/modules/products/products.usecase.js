@@ -1,5 +1,6 @@
 import prisma from '../../../prisma/context.js'
 import { ProductDTO } from './products.dto.js'
+import { isValidHttpUrl } from '../../shared/shared.url.utils.js'
 
 const getProducts = async () => {
   return await prisma.productos.findMany({ select: ProductDTO })
@@ -12,6 +13,15 @@ const getProductById = async (id) => {
   })
 }
 
+const normalizeImageUrl = (value) => {
+  const trimmed = typeof value === 'string' ? value.trim() : ''
+  if (!trimmed) return null
+  if (!isValidHttpUrl(trimmed)) {
+    throw new Error('La URL de la imagen debe ser un enlace http/https válido')
+  }
+  return trimmed
+}
+
 const createProduct = async (data) => {
   const { nombre, descripcion, imagen_url, id_categoria, estado = 'activo' } = data
 
@@ -22,7 +32,7 @@ const createProduct = async (data) => {
   const payload = {
     nombre,
     descripcion: descripcion || null,
-    imagen_url: imagen_url || null,
+    imagen_url: normalizeImageUrl(imagen_url),
     estado,
     id_categoria: Number(id_categoria),
   }
@@ -38,7 +48,7 @@ const updateProduct = async (id, data) => {
 
   if (nombre !== undefined) payload.nombre = nombre
   if (descripcion !== undefined) payload.descripcion = descripcion
-  if (imagen_url !== undefined) payload.imagen_url = imagen_url
+  if (imagen_url !== undefined) payload.imagen_url = normalizeImageUrl(imagen_url)
   if (estado !== undefined) payload.estado = estado
   if (id_categoria !== undefined) payload.id_categoria = Number(id_categoria)
 
