@@ -110,7 +110,13 @@ model Tamanos {
   id_tamano   Int                  @id @default(autoincrement())
   nombre      String               @unique @db.VarChar(100)
   descripcion String?              @db.VarChar(255)
+  precio_base Decimal              @db.Decimal(10, 2)
+  activo      Boolean              @default(true)
+  deleted_at  DateTime?            @db.DateTime(0)
   Variantes   Variantes_Producto[]
+
+  @@index([activo])
+  @@index([deleted_at])
 }
 
 model Tipos_Masa {
