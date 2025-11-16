@@ -10,6 +10,7 @@ import {
 import type { SelectChangeEvent } from '@mui/material/Select'
 import { useProductsUpdate } from '../../../hook/products/useProductsUpdate'
 import type { Product } from '../../../types/products/products.schema'
+import { isValidHttpUrl } from '../../../shared/utils/url'
 
 interface UseProductEditHookParams {
   product: Product | null
@@ -33,7 +34,7 @@ const emptyFormState: EditFormState = {
   estado: 'activo',
 }
 
-type FormErrors = Partial<Record<'nombre' | 'id_categoria', string>>
+type FormErrors = Partial<Record<'nombre' | 'id_categoria' | 'imagen_url', string>>
 
 export const useProductEditHook = ({
   product,
@@ -71,7 +72,7 @@ export const useProductEditHook = ({
         const value = event.target.value
         setFormData((prev) => ({ ...prev, [field]: value }))
 
-        if (field === 'nombre' || field === 'id_categoria') {
+        if (field === 'nombre' || field === 'id_categoria' || field === 'imagen_url') {
           setErrors((prev) => ({ ...prev, [field]: undefined }))
         }
       },
@@ -104,6 +105,11 @@ export const useProductEditHook = ({
 
     if (formData.id_categoria === '') {
       newErrors.id_categoria = 'La categoría es requerida'
+    }
+
+    const trimmedImageUrl = formData.imagen_url.trim()
+    if (trimmedImageUrl && !isValidHttpUrl(trimmedImageUrl)) {
+      newErrors.imagen_url = 'Ingresa un enlace válido (http/https)'
     }
 
     setErrors(newErrors)

@@ -183,7 +183,12 @@ const ProductAddDrawer = ({ onBack, onSuccess }: ProductAddDrawerProps) => {
                     label="URL de la imagen"
                     value={formData.imagen_url}
                     onChange={handleInputChange('imagen_url')}
+                    type="url"
                     placeholder="https://ejemplo.com/imagen.jpg"
+                    error={!!errors.imagen_url}
+                    helperText={
+                      errors.imagen_url || 'Pega un enlace público con formato https://...'
+                    }
                     inputProps={{ maxLength: 255 }}
                   />
                 </Grid>

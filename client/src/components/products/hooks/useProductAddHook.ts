@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState, type ChangeEvent } from 'react'
 import type { SelectChangeEvent } from '@mui/material/Select'
 import { useProductsCreate } from '../../../hook/products/useProductsCreate'
 import type { Product } from '../../../types/products/products.schema'
+import { isValidHttpUrl } from '../../../shared/utils/url'
 
 interface UseProductAddHookParams {
   onBack: () => void
@@ -78,6 +79,11 @@ export const useProductAddHook = ({ onBack, onSuccess }: UseProductAddHookParams
 
     if (formData.id_categoria === '') {
       newErrors.id_categoria = 'La categoría es requerida'
+    }
+
+    const trimmedImageUrl = formData.imagen_url.trim()
+    if (trimmedImageUrl && !isValidHttpUrl(trimmedImageUrl)) {
+      newErrors.imagen_url = 'Ingresa un enlace válido (http/https)'
     }
 
     setErrors(newErrors)
