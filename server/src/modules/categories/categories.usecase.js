@@ -3,11 +3,21 @@ import { CategoryDTO, CategoryListDTO } from './categories.dto.js'
 
 
 const getCategories = async () => {
-  return await prisma.categorias.findMany({ select: CategoryListDTO, orderBy: { nombre_categoria: 'asc' } })
+  return await prisma.categorias.findMany({ 
+    where: { deleted_at: null },
+    select: CategoryListDTO, 
+    orderBy: { nombre_categoria: 'asc' } 
+  })
 }
 
 const getCategoryById = async (id) => {
-  return await prisma.categorias.findUnique({ where: { id_categoria: Number(id) }, select: CategoryDTO })
+  return await prisma.categorias.findFirst({ 
+    where: { 
+      id_categoria: Number(id),
+      deleted_at: null 
+    }, 
+    select: CategoryDTO 
+  })
 }
 
 const createCategory = async (data) => {
@@ -19,7 +29,11 @@ const updateCategory = async (id, data) => {
 }
 
 const deleteCategory = async (id) => {
-  return await prisma.categorias.delete({ where: { id_categoria: Number(id) }, select: { id_categoria: true } })
+  return await prisma.categorias.update({ 
+    where: { id_categoria: Number(id) }, 
+    data: { activo: false, deleted_at: new Date() },
+    select: { id_categoria: true } 
+  })
 }
 
 export { getCategories, getCategoryById, createCategory, updateCategory, deleteCategory }

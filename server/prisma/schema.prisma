@@ -68,30 +68,42 @@ enum TransactionStatus {
 }
 
 model Usuarios {
-  id_usuario            Int                              @id @default(autoincrement())
-  nombre                String                           @db.VarChar(100)
-  apellido              String                           @db.VarChar(100)
-  email                 String                           @unique @db.VarChar(255)
-  username              String                           @unique @db.VarChar(255)
+  id_usuario             Int                              @id @default(autoincrement())
+  nombre                 String                           @db.VarChar(100)
+  apellido               String                           @db.VarChar(100)
+  email                  String                           @unique @db.VarChar(255)
+  username               String                           @unique @db.VarChar(255)
   contraseña_encriptada String                           @db.VarChar(255)
-  telefono              String?                          @db.VarChar(20)
-  direccion             String?                          @db.VarChar(255)
-  rol                   Role
-  fecha_registro        DateTime                         @default(now()) @db.Timestamp(0)
-  activo                Boolean                          @default(true)
-  Pedidos_Cliente       Pedidos[]                        @relation("ClientePedidos")
-  Pedidos_Repartidor    Pedidos[]                        @relation("RepartidorPedidos")
-  Cupones_Creados       Cupones[]
-  Carrito_Items         Carrito[]
-  Historial_Cambios     Historial_Estado_Pedido[]
-  Tokens_Recuperacion   tokens_recuperacion_contrasena[]
+  telefono               String?                          @db.VarChar(20)
+  direccion              String?                          @db.VarChar(255)
+  rol                    Role
+  fecha_registro         DateTime                         @default(now()) @db.Timestamp(0)
+  updated_at             DateTime                         @default(now()) @updatedAt @db.Timestamp(0)
+  activo                 Boolean                          @default(true)
+  deleted_at             DateTime?                        @db.DateTime(0)
+  Pedidos_Cliente        Pedidos[]                        @relation("ClientePedidos")
+  Pedidos_Repartidor     Pedidos[]                        @relation("RepartidorPedidos")
+  Cupones_Creados        Cupones[]
+  Carrito_Items          Carrito[]
+  Historial_Cambios      Historial_Estado_Pedido[]
+  Tokens_Recuperacion    tokens_recuperacion_contrasena[]
+
+  @@index([activo])
+  @@index([deleted_at])
 }
 
 model Categorias {
   id_categoria     Int         @id @default(autoincrement())
   nombre_categoria String      @unique @db.VarChar(100)
   descripcion      String?     @db.Text
+  activo           Boolean     @default(true)
+  created_at       DateTime    @default(now()) @db.Timestamp(0)
+  updated_at       DateTime    @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at       DateTime?   @db.DateTime(0)
   Productos        Productos[]
+
+  @@index([activo])
+  @@index([deleted_at])
 }
 
 model Productos {
@@ -102,8 +114,13 @@ model Productos {
   imagen_url     String?              @db.VarChar(255)
   estado         ProductStatus        @default(activo)
   fecha_creacion DateTime             @default(now()) @db.Timestamp(0)
+  updated_at     DateTime             @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at     DateTime?            @db.DateTime(0)
   Categoria      Categorias           @relation(fields: [id_categoria], references: [id_categoria])
   Variantes      Variantes_Producto[]
+
+  @@index([estado])
+  @@index([deleted_at])
 }
 
 model Tamanos {
@@ -112,6 +129,8 @@ model Tamanos {
   descripcion String?              @db.VarChar(255)
   precio_base Decimal              @db.Decimal(10, 2)
   activo      Boolean              @default(true)
+  created_at  DateTime             @default(now()) @db.Timestamp(0)
+  updated_at  DateTime             @default(now()) @updatedAt @db.Timestamp(0)
   deleted_at  DateTime?            @db.DateTime(0)
   Variantes   Variantes_Producto[]
 
@@ -122,8 +141,16 @@ model Tamanos {
 model Tipos_Masa {
   id_tipo_masa     Int                  @id @default(autoincrement())
   nombre           String               @unique @db.VarChar(100)
+  descripcion      String?              @db.VarChar(255)
   precio_adicional Decimal              @default(0.00) @db.Decimal(10, 2)
+  activo           Boolean              @default(true)
+  created_at       DateTime             @default(now()) @db.Timestamp(0)
+  updated_at       DateTime             @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at       DateTime?            @db.DateTime(0)
   Variantes        Variantes_Producto[]
+
+  @@index([activo])
+  @@index([deleted_at])
 }
 
 model Ingredientes {
@@ -132,8 +159,14 @@ model Ingredientes {
   precio_adicional Decimal                       @db.Decimal(10, 2)
   stock_disponible Int                           @default(0)
   activo           Boolean                       @default(true)
+  created_at       DateTime                      @default(now()) @db.Timestamp(0)
+  updated_at       DateTime                      @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at       DateTime?                     @db.DateTime(0)
   CarritoItems     Carrito_Ingredientes[]
   PedidoItems      Detalle_Pedido_Ingredientes[]
+
+  @@index([activo])
+  @@index([deleted_at])
 }
 
 model Variantes_Producto {
@@ -144,6 +177,9 @@ model Variantes_Producto {
   precio_base  Decimal          @db.Decimal(10, 2)
   sku          String?          @unique @db.VarChar(100)
   activo       Boolean          @default(true)
+  created_at   DateTime         @default(now()) @db.Timestamp(0)
+  updated_at   DateTime         @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at   DateTime?        @db.DateTime(0)
   Producto     Productos        @relation(fields: [id_producto], references: [id_producto])
   Tamano       Tamanos          @relation(fields: [id_tamano], references: [id_tamano])
   Tipo_Masa    Tipos_Masa?      @relation(fields: [id_tipo_masa], references: [id_tipo_masa])
@@ -151,6 +187,9 @@ model Variantes_Producto {
   PedidoItems  Detalle_Pedido[]
 
   @@unique([id_producto, id_tamano, id_tipo_masa], name: "uk_variante")
+  @@index([id_producto, id_tamano])
+  @@index([activo])
+  @@index([deleted_at])
 }
 
 model Carrito {
@@ -222,17 +261,19 @@ model Detalle_Pedido_Ingredientes {
 }
 
 model Cupones {
-  id_cupon            Int                     @id @default(autoincrement())
-  codigo              String                  @unique @db.VarChar(50)
+  id_cupon            Int                   @id @default(autoincrement())
+  codigo              String                @unique @db.VarChar(50)
   tipo_descuento      DiscountType
-  valor_descuento     Decimal                 @db.Decimal(10, 2)
-  fecha_inicio        DateTime                @db.Date
-  fecha_fin           DateTime                @db.Date
+  valor_descuento     Decimal               @db.Decimal(10, 2)
+  fecha_inicio        DateTime              @db.Date
+  fecha_fin           DateTime              @db.Date
   cantidad_disponible Int?
-  monto_minimo_compra Decimal                 @default(0.00) @db.Decimal(10, 2)
-  activo              Boolean                 @default(true)
+  monto_minimo_compra Decimal               @default(0.00) @db.Decimal(10, 2)
+  activo              Boolean               @default(true)
   creado_por_admin    Int
-  Creado_Por          Usuarios                @relation(fields: [creado_por_admin], references: [id_usuario])
+  created_at          DateTime              @default(now()) @db.Timestamp(0)
+  updated_at          DateTime              @default(now()) @updatedAt @db.Timestamp(0)
+  Creado_Por          Usuarios              @relation(fields: [creado_por_admin], references: [id_usuario])
   Pedidos_Aplicados   Pedidos[]
   Restricciones       Restricciones_Cupon[]
 }

@@ -15,8 +15,11 @@ export const checkPedidoExists = async (id_pedido) => {
 }
 
 export const checkClienteExists = async (id_cliente) => {
-  const cliente = await prisma.usuarios.findUnique({
-    where: { id_usuario: parseId(id_cliente) },
+  const cliente = await prisma.usuarios.findFirst({
+    where: { 
+      id_usuario: parseId(id_cliente),
+      deleted_at: null 
+    },
   })
 
   if (!cliente) {
@@ -35,8 +38,11 @@ export const checkClienteExists = async (id_cliente) => {
 }
 
 export const checkRepartidorExists = async (id_repartidor) => {
-  const repartidor = await prisma.usuarios.findUnique({
-    where: { id_usuario: parseId(id_repartidor) },
+  const repartidor = await prisma.usuarios.findFirst({
+    where: { 
+      id_usuario: parseId(id_repartidor),
+      deleted_at: null 
+    },
   })
 
   if (!repartidor) {
@@ -95,8 +101,11 @@ export const checkCarritoHasItems = async (id_cliente) => {
 }
 
 export const checkVarianteExists = async (id_variante) => {
-  const variante = await prisma.variantes_producto.findUnique({
-    where: { id_variante: parseId(id_variante) },
+  const variante = await prisma.variantes_producto.findFirst({
+    where: { 
+      id_variante: parseId(id_variante),
+      deleted_at: null 
+    },
   })
 
   if (!variante) {

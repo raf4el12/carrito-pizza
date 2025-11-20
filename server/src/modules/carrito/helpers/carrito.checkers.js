@@ -22,8 +22,11 @@ export const checkCarritoItemExists = async (id_carrito, id_cliente = null) => {
 }
 
 export const checkClienteExists = async (id_cliente) => {
-  const cliente = await prisma.usuarios.findUnique({
-    where: { id_usuario: parseId(id_cliente) },
+  const cliente = await prisma.usuarios.findFirst({
+    where: { 
+      id_usuario: parseId(id_cliente),
+      deleted_at: null 
+    },
   })
 
   if (!cliente) {
@@ -34,8 +37,11 @@ export const checkClienteExists = async (id_cliente) => {
 }
 
 export const checkVarianteExists = async (id_variante) => {
-  const variante = await prisma.variantes_producto.findUnique({
-    where: { id_variante: parseId(id_variante) },
+  const variante = await prisma.variantes_producto.findFirst({
+    where: { 
+      id_variante: parseId(id_variante),
+      deleted_at: null 
+    },
   })
 
   if (!variante) {
@@ -55,7 +61,8 @@ export const checkIngredientesExist = async (ingredientes) => {
   const foundIngredientes = await prisma.ingredientes.findMany({
     where: {
       id_ingrediente: { in: ids },
-      disponible: true,
+      activo: true,
+      deleted_at: null,
     },
   })
 

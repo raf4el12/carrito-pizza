@@ -37,7 +37,7 @@ const createdUsuario = async (data) => {
 
 const getUsuarios = async () => {
   return await prisma.usuarios.findMany({
-    where: { activo: true },
+    where: { deleted_at: null },
     orderBy: { fecha_registro: 'desc' },
     select: UsuarioPublicoDTO, 
   })
@@ -47,7 +47,7 @@ const getUsuarioById = async (id) => {
   const usuario = await prisma.usuarios.findFirst({
     where: {
       id_usuario: parseUserId(id),
-      activo: true,
+      deleted_at: null,
     },
     select: UsuarioPublicoDTO, 
   })
@@ -112,7 +112,7 @@ const deleteUsuarioById = async (id) => {
 
   return await prisma.usuarios.update({
     where: { id_usuario: parseUserId(id) },
-    data: { activo: false },
+    data: { activo: false, deleted_at: new Date() },
     select: UsuarioPublicoDTO, 
   })
 }

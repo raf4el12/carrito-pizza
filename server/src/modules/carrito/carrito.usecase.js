@@ -185,7 +185,13 @@ function sumCartTotals(items) {
 async function assertStockAvailable(tx, ingredientesParsed, cantidad) {
   if (!ingredientesParsed?.length) return
   const ids = ingredientesParsed.map((i) => i.id_ingrediente)
-  const rows = await tx.ingredientes.findMany({ where: { id_ingrediente: { in: ids } }, select: { id_ingrediente: true, stock_disponible: true } })
+  const rows = await tx.ingredientes.findMany({ 
+    where: { 
+      id_ingrediente: { in: ids },
+      deleted_at: null 
+    }, 
+    select: { id_ingrediente: true, stock_disponible: true } 
+  })
   for (const i of ingredientesParsed) {
     const row = rows.find((r) => r.id_ingrediente === i.id_ingrediente)
     if (!row || row.stock_disponible < cantidad) {
