@@ -9,6 +9,7 @@ import ingredientsRoutes from './modules/ingredients/ingredients.routes.js'
 import carritoRoutes from './modules/carrito/carrito.routes.js'
 import pedidosRoutes from './modules/pedidos/pedidos.routes.js'
 import masaTypesRoutes from './modules/masaTypes/masaTypes.routes.js'
+import reviewsRoutes from './modules/reviews/reviews.routes.js'
 
 
 
@@ -24,5 +25,6 @@ router.use('/ingredients', ingredientsRoutes)
 router.use('/carrito', carritoRoutes)
 router.use('/pedidos', pedidosRoutes)
 router.use('/masa-types', masaTypesRoutes)
+router.use('/reviews', reviewsRoutes)
 
 export default router
