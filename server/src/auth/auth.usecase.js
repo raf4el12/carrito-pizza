@@ -12,10 +12,11 @@ import {
 const messageError = 'Credenciales no validas'
 
 const login = async (email, password) => {
-  const usuario = await prisma.usuarios.findUnique({
+  const usuario = await prisma.usuarios.findFirst({
     where: {
       email,
       activo: true,
+      deleted_at: null,
     },
   })
 
@@ -40,10 +41,11 @@ const refreshToken = async (refreshToken) => {
   const payload = validRefreshToken(refreshToken)
   if (!payload) throw new UnauthorizedError(messageError)
 
-  const usuario = await prisma.usuarios.findUnique({
+  const usuario = await prisma.usuarios.findFirst({
     where: {
       id_usuario: payload.userId,
       activo: true,
+      deleted_at: null,
     },
   })
 

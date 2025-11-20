@@ -3,12 +3,18 @@ import { ProductDTO } from './products.dto.js'
 import { isValidHttpUrl } from '../../shared/shared.url.utils.js'
 
 const getProducts = async () => {
-  return await prisma.productos.findMany({ select: ProductDTO })
+  return await prisma.productos.findMany({ 
+    where: { deleted_at: null },
+    select: ProductDTO 
+  })
 }
 
 const getProductById = async (id) => {
-  return await prisma.productos.findUnique({
-    where: { id_producto: Number(id) },
+  return await prisma.productos.findFirst({
+    where: { 
+      id_producto: Number(id),
+      deleted_at: null 
+    },
     select: ProductDTO,
   })
 }
@@ -61,7 +67,11 @@ const updateProduct = async (id, data) => {
 
 
 const deleteProduct = async (id) => {
-  return await prisma.productos.delete({ where: { id_producto: Number(id) }, select: { id_producto: true } })
+  return await prisma.productos.update({ 
+    where: { id_producto: Number(id) }, 
+    data: { deleted_at: new Date() },
+    select: { id_producto: true } 
+  })
 }
 
 export { getProducts, getProductById, createProduct, updateProduct, deleteProduct }

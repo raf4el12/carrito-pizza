@@ -1,8 +1,23 @@
 import prisma from '../../../prisma/context.js'
 import { VariantDTO } from './variants.dto.js'
+import {
+  normalizeVariantData,
+  calculateFinalVariantState,
+  buildUpdatePayload,
+  hasUniqueFieldsChanged,
+} from './utils/variants.utils.js'
+import {
+  validateUniqueVariant,
+  getCurrentVariantForUpdate,
+} from './validation/variants.validation.js'
 
+/**
+ * Obtiene todas las variantes de productos activas
+ * @returns {Promise<Array>} Lista de variantes
+ */
 const getVariantsProducts = async () => {
   const variants = await prisma.variantes_producto.findMany({
+    where: { deleted_at: null },
     select: VariantDTO,
     orderBy: [{ activo: 'desc' }, { id_variante: 'desc' }],
   })
@@ -10,33 +25,16 @@ const getVariantsProducts = async () => {
   return variants
 }
 
+/**
+ * Obtiene una variante por su ID
+ * @param {string|number} id - ID de la variante
+ * @returns {Promise<Object|null>} La variante encontrada o null
+ */
 const getVariantProductById = async (id) => {
-  const variant = await prisma.variantes_producto.findUnique({
-    where: { id_variante: Number.parseInt(id, 10) },
-    select: VariantDTO,
-  })
-
-  return variant
-}
-
-const createVariantProduct = async (data) => {
-  const {
-    id_producto,
-    id_tamano,
-    id_tipo_masa = null,
-    precio_base,
-    sku = null,
-    activo = true,
-  } = data
-
-  const variant = await prisma.variantes_producto.create({
-    data: {
-      id_producto: Number(id_producto),
-      id_tamano: Number(id_tamano),
-      id_tipo_masa: id_tipo_masa !== null ? Number(id_tipo_masa) : null,
-      precio_base,
-      sku,
-      activo,
+  const variant = await prisma.variantes_producto.findFirst({
+    where: {
+      id_variante: Number.parseInt(id, 10),
+      deleted_at: null,
     },
     select: VariantDTO,
   })
@@ -44,42 +42,71 @@ const createVariantProduct = async (data) => {
   return variant
 }
 
+/**
+ * Crea una nueva variante de producto
+ * @param {Object} data - Datos de la variante a crear
+ * @returns {Promise<Object>} La variante creada
+ */
+const createVariantProduct = async (data) => {
+  const normalizedData = normalizeVariantData(data)
 
-const updateVariantProduct = async (id, data) => {
-  const {
-    id_producto,
-    id_tamano,
-    id_tipo_masa,
-    precio_base,
-    sku,
-    activo,
-  } = data
+  await validateUniqueVariant(
+    normalizedData.id_producto,
+    normalizedData.id_tamano,
+    normalizedData.id_tipo_masa,
+  )
 
-  const updateData = {
-    ...(id_producto !== undefined ? { id_producto: Number(id_producto) } : {}),
-    ...(id_tamano !== undefined ? { id_tamano: Number(id_tamano) } : {}),
-    ...(id_tipo_masa !== undefined
-      ? { id_tipo_masa: id_tipo_masa === null ? null : Number(id_tipo_masa) }
-      : {}),
-    ...(precio_base !== undefined ? { precio_base } : {}),
-    ...(sku !== undefined ? { sku } : {}),
-    ...(activo !== undefined ? { activo } : {}),
-  }
-
-  const variant = await prisma.variantes_producto.update({
-    where: { id_variante: Number.parseInt(id, 10) },
-    data: updateData,
+  const variant = await prisma.variantes_producto.create({
+    data: normalizedData,
     select: VariantDTO,
   })
 
   return variant
 }
 
+/**
+ * Actualiza una variante de producto existente
+ * @param {string|number} id - ID de la variante a actualizar
+ * @param {Object} data - Datos a actualizar
+ * @returns {Promise<Object>} La variante actualizada
+ */
+const updateVariantProduct = async (id, data) => {
+  const idVariante = Number.parseInt(id, 10)
+
+  const currentVariant = await getCurrentVariantForUpdate(idVariante)
+  const finalState = calculateFinalVariantState(currentVariant, data)
+
+  if (hasUniqueFieldsChanged(currentVariant, finalState)) {
+    await validateUniqueVariant(
+      finalState.id_producto,
+      finalState.id_tamano,
+      finalState.id_tipo_masa,
+      idVariante,
+    )
+  }
+
+  const updatePayload = buildUpdatePayload(currentVariant, finalState, data)
+
+  const variant = await prisma.variantes_producto.update({
+    where: { id_variante: idVariante },
+    data: updatePayload,
+    select: VariantDTO,
+  })
+
+  return variant
+}
+
+/**
+ * Elimina una variante de producto (soft delete)
+ * @param {string|number} id - ID de la variante a eliminar
+ * @returns {Promise<number>} ID de la variante eliminada
+ */
 const deleteVariantProduct = async (id) => {
-  const variant = await prisma.variantes_producto.delete({
+  const variant = await prisma.variantes_producto.update({
     where: {
       id_variante: Number.parseInt(id, 10),
     },
+    data: { activo: false, deleted_at: new Date() },
     select: { id_variante: true },
   })
 

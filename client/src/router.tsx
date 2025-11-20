@@ -72,6 +72,12 @@ const IngredientsPage = lazy(
 const SizesPage = lazy(
   () => import('./pages/sizes/SizesPage' /* webpackChunkName: "sizes-page" */)
 )
+const MasaTypesPage = lazy(
+  () =>
+    import(
+      './pages/masa-types/MasaTypesPage' /* webpackChunkName: "masa-types-page" */
+    )
+)
 
 const router = createBrowserRouter([
   {
@@ -132,6 +138,10 @@ const router = createBrowserRouter([
           {
             path: 'tamanos',
             element: <SizesPage />,
+          },
+          {
+            path: 'tipos-masa',
+            element: <MasaTypesPage />,
           },
         ],
       },

@@ -2,11 +2,21 @@ import prisma from '../../../prisma/context.js'
 import { IngredientDTO, IngredientListDTO } from './ingredients.dto.js'
 
 const getIngredients = async () => {
-  return await prisma.ingredientes.findMany({ select: IngredientListDTO, orderBy: { nombre: 'asc' } })
+  return await prisma.ingredientes.findMany({ 
+    where: { deleted_at: null },
+    select: IngredientListDTO, 
+    orderBy: { nombre: 'asc' } 
+  })
 }
 
 const getIngredientById = async (id) => {
-  return await prisma.ingredientes.findUnique({ where: { id_ingrediente: Number.parseInt(id, 10) }, select: IngredientDTO })
+  return await prisma.ingredientes.findFirst({ 
+    where: { 
+      id_ingrediente: Number.parseInt(id, 10),
+      deleted_at: null 
+    }, 
+    select: IngredientDTO 
+  })
 }
 
 const createIngredient = async (data) => {
@@ -41,7 +51,11 @@ const updateIngredient = async (id, data) => {
 }
 
 const deleteIngredient = async (id) => {
-  return await prisma.ingredientes.delete({ where: { id_ingrediente: Number.parseInt(id, 10) }, select: { id_ingrediente: true } })
+  return await prisma.ingredientes.update({ 
+    where: { id_ingrediente: Number.parseInt(id, 10) }, 
+    data: { activo: false, deleted_at: new Date() },
+    select: { id_ingrediente: true } 
+  })
 }
 
 export {
