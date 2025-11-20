@@ -63,6 +63,12 @@ const ProductsPage = lazy(
       './pages/products/ProductsPage' /* webpackChunkName: "products-page" */
     )
 )
+const ReviewsListPage = lazy(
+  () =>
+    import(
+      './pages/admin/ReviewsListPage' /* webpackChunkName: "reviews-page" */
+    )
+)
 const IngredientsPage = lazy(
   () =>
     import(
@@ -130,6 +136,10 @@ const router = createBrowserRouter([
           {
             path: 'productos',
             element: <ProductsPage />,
+          },
+          {
+            path: 'resenas',
+            element: <ReviewsListPage />,
           },
           {
             path: 'ingredientes',

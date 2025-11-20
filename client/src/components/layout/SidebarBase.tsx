@@ -43,6 +43,7 @@ const maestros: MenuItem[] = [
   { label: 'Ingredientes', icon: <RestaurantIcon />, href: '/admin/ingredientes' },
   { label: 'Tamaños', icon: <RestaurantIcon />, href: '/admin/tamanos' },
   { label: 'Tipos de masa', icon: <RestaurantIcon />, href: '/admin/tipos-masa' },
+  { label: 'Reseñas', icon: <RestaurantIcon />, href: '/admin/resenas' },
 ]
 
 export default function SidebarBase() {
