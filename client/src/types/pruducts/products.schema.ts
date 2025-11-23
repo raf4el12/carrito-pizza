@@ -1,6 +1,5 @@
 import z from 'zod'
 
-// Schema para crear producto
 export const productCreateSchema = z.object({
   nombre: z
     .string()
@@ -19,7 +18,7 @@ export const productCreateSchema = z.object({
   estado: z.enum(['activo', 'inactivo']).optional(),
 })
 
-// Schema para actualizar producto
+
 export const productUpdateSchema = z.object({
   nombre: z
     .string()
@@ -40,23 +39,22 @@ export const productUpdateSchema = z.object({
   estado: z.enum(['activo', 'inactivo']).optional(),
 })
 
-// Tipos inferidos de los schemas
+
 export type ProductCreateDto = z.infer<typeof productCreateSchema>
 export type ProductUpdateDto = z.infer<typeof productUpdateSchema>
 
-// Enum para el estado del producto
 export enum ProductStatus {
   ACTIVO = 'activo',
   INACTIVO = 'inactivo',
 }
 
-// Interface del producto completo (como viene del backend)
 export interface Product {
   id_producto: number
   id_categoria: number
   nombre: string
   descripcion: string | null
   imagen_url: string | null
+  precio?: string | number // Added optional price
   estado: 'activo' | 'inactivo'
   fecha_creacion: string
   Categoria?: {
@@ -66,7 +64,7 @@ export interface Product {
   }
 }
 
-// Interface simplificada para listas
+
 export interface ProductListItem {
   id_producto: number
   nombre: string
