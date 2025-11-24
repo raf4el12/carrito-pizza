@@ -23,6 +23,7 @@ interface EditFormState {
   descripcion: string
   id_categoria: number | ''
   imagen_url: string
+  precio_base: string
   estado: 'activo' | 'inactivo'
 }
 
@@ -31,10 +32,11 @@ const emptyFormState: EditFormState = {
   descripcion: '',
   id_categoria: '',
   imagen_url: '',
+  precio_base: '',
   estado: 'activo',
 }
 
-type FormErrors = Partial<Record<'nombre' | 'id_categoria' | 'imagen_url', string>>
+type FormErrors = Partial<Record<'nombre' | 'id_categoria' | 'imagen_url' | 'precio_base', string>>
 
 export const useProductEditHook = ({
   product,
@@ -52,6 +54,7 @@ export const useProductEditHook = ({
         descripcion: product.descripcion ?? '',
         id_categoria: product.id_categoria ?? '',
         imagen_url: product.imagen_url ?? '',
+        precio_base: product.precio_base ? String(product.precio_base) : '',
         estado: product.estado ?? 'activo',
       })
       setErrors({})
@@ -72,7 +75,7 @@ export const useProductEditHook = ({
         const value = event.target.value
         setFormData((prev) => ({ ...prev, [field]: value }))
 
-        if (field === 'nombre' || field === 'id_categoria' || field === 'imagen_url') {
+        if (field === 'nombre' || field === 'id_categoria' || field === 'imagen_url' || field === 'precio_base') {
           setErrors((prev) => ({ ...prev, [field]: undefined }))
         }
       },
@@ -107,6 +110,13 @@ export const useProductEditHook = ({
       newErrors.id_categoria = 'La categoría es requerida'
     }
 
+    if (formData.precio_base.trim()) {
+      const precio = parseFloat(formData.precio_base)
+      if (isNaN(precio) || precio <= 0) {
+        newErrors.precio_base = 'El precio debe ser un número mayor a 0'
+      }
+    }
+
     const trimmedImageUrl = formData.imagen_url.trim()
     if (trimmedImageUrl && !isValidHttpUrl(trimmedImageUrl)) {
       newErrors.imagen_url = 'Ingresa un enlace válido (http/https)'
@@ -126,15 +136,21 @@ export const useProductEditHook = ({
     if (!validateForm()) return
 
     try {
+      const updateData: any = {
+        nombre: formData.nombre.trim(),
+        descripcion: formData.descripcion.trim() || null,
+        id_categoria: formData.id_categoria as number,
+        imagen_url: formData.imagen_url.trim() || null,
+        estado: formData.estado,
+      }
+
+      if (formData.precio_base.trim()) {
+        updateData.precio_base = parseFloat(formData.precio_base)
+      }
+
       const updatedProduct = await updateProduct.mutateAsync({
         id: product.id_producto,
-        data: {
-          nombre: formData.nombre.trim(),
-          descripcion: formData.descripcion.trim() || null,
-          id_categoria: formData.id_categoria as number,
-          imagen_url: formData.imagen_url.trim() || null,
-          estado: formData.estado,
-        },
+        data: updateData,
       })
 
       resetForm()

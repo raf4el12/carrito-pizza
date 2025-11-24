@@ -16,6 +16,7 @@ interface FormState {
   descripcion: string
   id_categoria: number | ''
   imagen_url: string
+  precio_base: string
   estado: 'activo' | 'inactivo'
 }
 
@@ -24,6 +25,7 @@ const initialFormState: FormState = {
   descripcion: '',
   id_categoria: '',
   imagen_url: '',
+  precio_base: '',
   estado: 'activo',
 }
 
@@ -81,6 +83,15 @@ export const useProductAddHook = ({ onBack, onSuccess }: UseProductAddHookParams
       newErrors.id_categoria = 'La categoría es requerida'
     }
 
+    if (!formData.precio_base.trim()) {
+      newErrors.precio_base = 'El precio base es requerido'
+    } else {
+      const precio = parseFloat(formData.precio_base)
+      if (isNaN(precio) || precio <= 0) {
+        newErrors.precio_base = 'El precio debe ser un número mayor a 0'
+      }
+    }
+
     const trimmedImageUrl = formData.imagen_url.trim()
     if (trimmedImageUrl && !isValidHttpUrl(trimmedImageUrl)) {
       newErrors.imagen_url = 'Ingresa un enlace válido (http/https)'
@@ -104,6 +115,7 @@ export const useProductAddHook = ({ onBack, onSuccess }: UseProductAddHookParams
         descripcion: formData.descripcion.trim() || null,
         id_categoria: formData.id_categoria as number,
         imagen_url: formData.imagen_url.trim() || null,
+        precio_base: parseFloat(formData.precio_base),
         estado: formData.estado,
       })
 
@@ -135,8 +147,14 @@ export const useProductAddHook = ({ onBack, onSuccess }: UseProductAddHookParams
   const isSubmitting = createProduct.isPending
 
   const canSubmit = useMemo(() => {
-    return !!formData.nombre.trim() && formData.id_categoria !== ''
-  }, [formData.id_categoria, formData.nombre])
+    return (
+      !!formData.nombre.trim() &&
+      formData.id_categoria !== '' &&
+      !!formData.precio_base.trim() &&
+      !isNaN(parseFloat(formData.precio_base)) &&
+      parseFloat(formData.precio_base) > 0
+    )
+  }, [formData.id_categoria, formData.nombre, formData.precio_base])
 
   return {
     formData,

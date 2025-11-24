@@ -15,6 +15,10 @@ export const productCreateSchema = z.object({
     .max(255, 'La URL de la imagen no puede exceder 255 caracteres')
     .optional()
     .nullable(),
+  precio_base: z
+    .number({ invalid_type_error: 'El precio base es obligatorio' })
+    .positive('El precio base debe ser un número positivo')
+    .or(z.string().transform((val) => parseFloat(val))),
   estado: z.enum(['activo', 'inactivo']).optional(),
 })
 
@@ -36,6 +40,11 @@ export const productUpdateSchema = z.object({
     .max(255, 'La URL de la imagen no puede exceder 255 caracteres')
     .optional()
     .nullable(),
+  precio_base: z
+    .number({ invalid_type_error: 'El precio base debe ser un número' })
+    .positive('El precio base debe ser un número positivo')
+    .optional()
+    .or(z.string().transform((val) => parseFloat(val)).optional()),
   estado: z.enum(['activo', 'inactivo']).optional(),
 })
 
@@ -54,7 +63,7 @@ export interface Product {
   nombre: string
   descripcion: string | null
   imagen_url: string | null
-  precio?: string | number // Added optional price
+  precio_base: string | number
   estado: 'activo' | 'inactivo'
   fecha_creacion: string
   Categoria?: {

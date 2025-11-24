@@ -173,6 +173,21 @@ const ProductEditDrawer = ({ product, onBack, onSuccess }: ProductEditDrawerProp
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Precio base"
+                    type="number"
+                    value={formData.precio_base}
+                    onChange={handleInputChange('precio_base')}
+                    error={!!errors.precio_base}
+                    helperText={errors.precio_base || 'Precio base del producto'}
+                    inputProps={{ min: 0, step: 0.01 }}
+                    InputProps={{
+                      startAdornment: <span style={{ marginRight: 8 }}>$</span>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
                     <InputLabel>Estado</InputLabel>
                     <Select

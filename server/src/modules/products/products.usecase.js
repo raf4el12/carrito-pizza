@@ -29,16 +29,21 @@ const normalizeImageUrl = (value) => {
 }
 
 const createProduct = async (data) => {
-  const { nombre, descripcion, imagen_url, id_categoria, estado = 'activo' } = data
+  const { nombre, descripcion, imagen_url, precio_base, id_categoria, estado = 'activo' } = data
 
   if (!id_categoria) {
     throw new Error('La categoría es obligatoria')
+  }
+
+  if (precio_base === undefined || precio_base === null) {
+    throw new Error('El precio base es obligatorio')
   }
 
   const payload = {
     nombre,
     descripcion: descripcion || null,
     imagen_url: normalizeImageUrl(imagen_url),
+    precio_base: Number(precio_base),
     estado,
     id_categoria: Number(id_categoria),
   }
@@ -48,13 +53,14 @@ const createProduct = async (data) => {
 
 
 const updateProduct = async (id, data) => {
-  const { nombre, descripcion, imagen_url, id_categoria, estado } = data
+  const { nombre, descripcion, imagen_url, precio_base, id_categoria, estado } = data
 
   const payload = {}
 
   if (nombre !== undefined) payload.nombre = nombre
   if (descripcion !== undefined) payload.descripcion = descripcion
   if (imagen_url !== undefined) payload.imagen_url = normalizeImageUrl(imagen_url)
+  if (precio_base !== undefined) payload.precio_base = Number(precio_base)
   if (estado !== undefined) payload.estado = estado
   if (id_categoria !== undefined) payload.id_categoria = Number(id_categoria)
 
