@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import useAuthContext from '../context/AuthContext'; 
-
+import useAuthContext from '../context/AuthContext';
+import PizzaCarousel from '../components/menu/components/PizzaCarousel';
 
 const PizzaIcon = () => (
   <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -32,30 +32,17 @@ const features = [
 ];
 
 const testimonials = [
-    {
-        quote: "¡La mejor pizza que he probado en años! El servicio fue rápido y el seguimiento del pedido es una maravilla.",
-        author: "Ana García",
-        image: "/images/testimonials/avatar-chica.jpg"
-    },
-    {
-        quote: "Me encanta la opción de personalizar mi pizza. Los ingredientes son siempre frescos y deliciosos.",
-        author: "Carlos Martínez",
-        image: "/images/testimonials/avatar-chico.jpg"
-    }
+  {
+    quote: "¡La mejor pizza que he probado en años! El servicio fue rápido y el seguimiento del pedido es una maravilla.",
+    author: "Ana García",
+    image: "/images/testimonials/avatar-chica.jpg"
+  },
+  {
+    quote: "Me encanta la opción de personalizar mi pizza. Los ingredientes son siempre frescos y deliciosos.",
+    author: "Carlos Martínez",
+    image: "/images/testimonials/avatar-chico.jpg"
+  }
 ];
-
-const menuHighlights = [
-    {
-        name: "Pizza Pepperoni Clásica",
-        description: "La favorita de todos, con pepperoni de alta calidad y queso mozzarella derretido.",
-        image: "/images/pizzas/pizza-peperoni.png"
-    },
-    {
-        name: "Pizza Vegetariana Suprema",
-        description: "Una explosión de sabor con pimientos, cebolla, champiñones y aceitunas negras.",
-        image: "/images/pizzas/pizza-vegeteriana.png"
-    }
-]
 
 interface HeroProps {
   getCtaLink: () => string
@@ -63,9 +50,9 @@ interface HeroProps {
 }
 
 const Hero = ({ getCtaLink, getCtaText }: HeroProps) => (
-  <header 
+  <header
     className="relative h-screen flex items-center justify-center text-white"
-    style={{ 
+    style={{
       backgroundImage: `url('/images/hero/hero-pizza.png')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -75,7 +62,7 @@ const Hero = ({ getCtaLink, getCtaText }: HeroProps) => (
     <div className="absolute inset-0 bg-black/60"></div>
     <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
       <h1 className="text-5xl md:text-7xl font-extrabold mb-4 leading-tight drop-shadow-lg">
-        El Sabor que te Une, <br/> Directo a Tu Puerta
+        El Sabor que te Une, <br /> Directo a Tu Puerta
       </h1>
       <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow">
         Ingredientes frescos, recetas auténticas y un servicio que te hará volver por más. ¿Qué esperas para probarla?
@@ -113,84 +100,56 @@ const Features = () => (
   </section>
 );
 
-const MenuHighlight = () => (
-    <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-4 text-gray-800">Un Vistazo a Nuestro Sabor</h2>
-            <p className="text-lg text-gray-600 mb-12 max-w-3xl mx-auto">Estas son algunas de las creaciones que nuestros clientes adoran.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {menuHighlights.map(pizza => (
-                    <div key={pizza.name} className="bg-white rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition duration-300">
-                        <img src={pizza.image} alt={pizza.name} className="w-full h-64 object-cover" />
-                        <div className="p-6">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{pizza.name}</h3>
-                            <p className="text-gray-700">{pizza.description}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-             <div className="mt-12">
-                <Link
-                    to="/menu"
-                    className="inline-block bg-gray-800 hover:bg-gray-900 text-white px-10 py-4 rounded-full text-xl font-bold shadow-lg transition duration-300"
-                >
-                    Ver Menú Completo
-                </Link>
-            </div>
-        </div>
-    </section>
-);
-
 const Testimonials = () => (
-    <section className="bg-red-700 text-white py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-extrabold mb-12">Lo que dicen nuestros clientes</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {testimonials.map(testimonial => (
-                    <div key={testimonial.author} className="bg-red-800 p-8 rounded-xl shadow-lg">
-                        <p className="text-lg italic mb-4">"{testimonial.quote}"</p>
-                        <div className="flex items-center justify-center">
-                            <img src={testimonial.image} alt={testimonial.author} className="w-12 h-12 rounded-full mr-4 border-2 border-white"/>
-                            <p className="font-bold">{testimonial.author}</p>
-                        </div>
-                    </div>
-                ))}
+  <section className="bg-red-700 text-white py-20 px-4">
+    <div className="max-w-4xl mx-auto text-center">
+      <h2 className="text-4xl font-extrabold mb-12">Lo que dicen nuestros clientes</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {testimonials.map(testimonial => (
+          <div key={testimonial.author} className="bg-red-800 p-8 rounded-xl shadow-lg">
+            <p className="text-lg italic mb-4">"{testimonial.quote}"</p>
+            <div className="flex items-center justify-center">
+              <img src={testimonial.image} alt={testimonial.author} className="w-12 h-12 rounded-full mr-4 border-2 border-white" />
+              <p className="font-bold">{testimonial.author}</p>
             </div>
-        </div>
-    </section>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 );
 
 const CtaSection = () => (
-    <section className="bg-gray-100 py-20">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-4xl font-extrabold mb-4 text-gray-900">
-            ¿Listo para tu próxima experiencia culinaria?
-          </h2>
-          <p className="text-xl text-gray-700 mb-8">
-            Explora nuestro menú y personaliza la pizza de tus sueños hoy mismo.
-          </p>
-          <Link
-            to="/menu"
-            className="inline-block bg-red-600 hover:bg-red-700 text-white px-10 py-4 rounded-full text-xl font-bold shadow-lg transition duration-300 transform hover:scale-105"
-          >
-            Ordenar Ahora
-          </Link>
-        </div>
-    </section>
+  <section className="bg-gray-100 py-20">
+    <div className="max-w-4xl mx-auto text-center px-4">
+      <h2 className="text-4xl font-extrabold mb-4 text-gray-900">
+        ¿Listo para tu próxima experiencia culinaria?
+      </h2>
+      <p className="text-xl text-gray-700 mb-8">
+        Explora nuestro menú y personaliza la pizza de tus sueños hoy mismo.
+      </p>
+      <Link
+        to="/menu"
+        className="inline-block bg-red-600 hover:bg-red-700 text-white px-10 py-4 rounded-full text-xl font-bold shadow-lg transition duration-300 transform hover:scale-105"
+      >
+        Ordenar Ahora
+      </Link>
+    </div>
+  </section>
 );
 
 const Footer = () => (
-    <footer className="bg-gray-900 text-gray-400 py-8 text-center">
-        <div className="max-w-6xl mx-auto">
-             <p className="text-sm">
-                &copy; {new Date().getFullYear()} TuPizzeríaWeb. Todos los derechos reservados.
-             </p>
-             <div className="mt-4">
-                <Link to="/privacy-policy" className="hover:text-white mx-2">Política de Privacidad</Link>
-                <Link to="/terms" className="hover:text-white mx-2">Términos de Servicio</Link>
-             </div>
-        </div>
-    </footer>
+  <footer className="bg-gray-900 text-gray-400 py-8 text-center">
+    <div className="max-w-6xl mx-auto">
+      <p className="text-sm">
+        &copy; {new Date().getFullYear()} TuPizzeríaWeb. Todos los derechos reservados.
+      </p>
+      <div className="mt-4">
+        <Link to="/privacy-policy" className="hover:text-white mx-2">Política de Privacidad</Link>
+        <Link to="/terms" className="hover:text-white mx-2">Términos de Servicio</Link>
+      </div>
+    </div>
+  </footer>
 );
 
 
@@ -198,7 +157,7 @@ const Main = () => {
   const { user } = useAuthContext();
 
   const getCtaLink = () => {
-    if (!user) return '/menu'; 
+    if (!user) return '/menu';
     return user.rol === 'administrador' ? '/admin/dashboard' : '/menu';
   };
 
@@ -211,7 +170,7 @@ const Main = () => {
       <Hero getCtaLink={getCtaLink} getCtaText={getCtaText} />
       <main>
         <Features />
-        <MenuHighlight />
+        <PizzaCarousel />
         <Testimonials />
         <CtaSection />
       </main>

@@ -120,6 +120,7 @@ model Productos {
   nombre         String               @db.VarChar(255)
   descripcion    String?              @db.Text
   imagen_url     String?              @db.VarChar(255)
+  precio_base    Decimal              @db.Decimal(10, 2)
   estado         ProductStatus        @default(activo)
   fecha_creacion DateTime             @default(now()) @db.Timestamp(0)
   updated_at     DateTime             @default(now()) @updatedAt @db.Timestamp(0)

@@ -1,6 +1,5 @@
 import z from 'zod'
 
-// Schema para crear producto
 export const productCreateSchema = z.object({
   nombre: z
     .string()
@@ -16,10 +15,14 @@ export const productCreateSchema = z.object({
     .max(255, 'La URL de la imagen no puede exceder 255 caracteres')
     .optional()
     .nullable(),
+  precio_base: z
+    .number({ invalid_type_error: 'El precio base es obligatorio' })
+    .positive('El precio base debe ser un número positivo')
+    .or(z.string().transform((val) => parseFloat(val))),
   estado: z.enum(['activo', 'inactivo']).optional(),
 })
 
-// Schema para actualizar producto
+
 export const productUpdateSchema = z.object({
   nombre: z
     .string()
@@ -37,26 +40,30 @@ export const productUpdateSchema = z.object({
     .max(255, 'La URL de la imagen no puede exceder 255 caracteres')
     .optional()
     .nullable(),
+  precio_base: z
+    .number({ invalid_type_error: 'El precio base debe ser un número' })
+    .positive('El precio base debe ser un número positivo')
+    .optional()
+    .or(z.string().transform((val) => parseFloat(val)).optional()),
   estado: z.enum(['activo', 'inactivo']).optional(),
 })
 
-// Tipos inferidos de los schemas
+
 export type ProductCreateDto = z.infer<typeof productCreateSchema>
 export type ProductUpdateDto = z.infer<typeof productUpdateSchema>
 
-// Enum para el estado del producto
 export enum ProductStatus {
   ACTIVO = 'activo',
   INACTIVO = 'inactivo',
 }
 
-// Interface del producto completo (como viene del backend)
 export interface Product {
   id_producto: number
   id_categoria: number
   nombre: string
   descripcion: string | null
   imagen_url: string | null
+  precio_base: string | number
   estado: 'activo' | 'inactivo'
   fecha_creacion: string
   Categoria?: {
@@ -66,7 +73,7 @@ export interface Product {
   }
 }
 
-// Interface simplificada para listas
+
 export interface ProductListItem {
   id_producto: number
   nombre: string

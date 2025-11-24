@@ -4,6 +4,7 @@ export const ProductDTO = {
   nombre: true,
   descripcion: true,
   imagen_url: true,
+  precio_base: true,
   estado: true,
   fecha_creacion: true,
   Categoria: { 
