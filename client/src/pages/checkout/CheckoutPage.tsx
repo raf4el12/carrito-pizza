@@ -1,106 +1,46 @@
-import { useState } from 'react'
-import { Button, Card, CardContent, CardHeader, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import { useCart } from '../../context/CartContext'
+import { Button, Typography } from '@mui/material'
 import useAuthContext from '../../context/AuthContext'
-import pedidosService from '../../shared/services/pedidos.service'
+import CheckoutFlow from '../../components/checkout/CheckoutFlow'
 
 const CheckoutPage = () => {
   const { user } = useAuthContext()
-  const { total, refresh } = useCart()
   const navigate = useNavigate()
-
-  const [direccion, setDireccion] = useState('')
-  const [notas, setNotas] = useState('')
-  const [metodoPago, setMetodoPago] = useState('efectivo')
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!user) {
     return (
-      <div className="max-w-4xl mx-auto py-10">
-        <Typography variant="h5" className="mb-2 font-bold">
-          Inicia sesión para continuar con el checkout
-        </Typography>
-        <Button variant="contained" onClick={() => navigate('/auth/login')}>
-          Ir a login
-        </Button>
+      <div className="max-w-4xl mx-auto py-20 px-4 text-center">
+        <div className="mb-8">
+          <Typography variant="h4" className="font-bold text-gray-900 mb-4">
+            Inicia sesión para continuar
+          </Typography>
+          <Typography className="text-gray-600 mb-8 max-w-md mx-auto">
+            Para procesar tu pedido necesitamos saber quién eres. Por favor inicia sesión o regístrate.
+          </Typography>
+          <div className="flex justify-center gap-4">
+            <Button
+              variant="contained"
+              onClick={() => navigate('/auth/login')}
+              className="bg-orange-600 hover:bg-orange-700 py-3 px-8 rounded-xl"
+            >
+              Iniciar Sesión
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/auth/signup')}
+              className="border-orange-600 text-orange-600 hover:bg-orange-50 py-3 px-8 rounded-xl"
+            >
+              Registrarse
+            </Button>
+          </div>
+        </div>
       </div>
     )
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    if (!direccion.trim()) {
-      toast.error('Ingresa una dirección de entrega')
-      return
-    }
-    setIsSubmitting(true)
-    try {
-      await pedidosService.create({
-        id_cliente: user.id_usuario,
-        direccion_entrega: direccion,
-        metodo_pago: metodoPago,
-        notas_cliente: notas || null,
-      })
-      toast.success('Pedido creado correctamente')
-      await refresh()
-      navigate('/menu')
-    } catch (error) {
-      console.error('Error al crear pedido', error)
-      toast.error('No se pudo crear el pedido')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Typography variant="h4" className="font-bold mb-6 text-gray-900">
-        Checkout
-      </Typography>
-
-      <Card className="shadow-sm">
-        <CardHeader title="Detalles de entrega" />
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <TextField
-              label="Dirección de entrega"
-              fullWidth
-              value={direccion}
-              onChange={(e) => setDireccion(e.target.value)}
-              required
-            />
-            <TextField
-              label="Notas (opcional)"
-              fullWidth
-              multiline
-              minRows={3}
-              value={notas}
-              onChange={(e) => setNotas(e.target.value)}
-            />
-            <TextField
-              select
-              label="Método de pago"
-              value={metodoPago}
-              onChange={(e) => setMetodoPago(e.target.value)}
-              fullWidth
-            >
-              <MenuItem value="efectivo">Efectivo</MenuItem>
-              <MenuItem value="tarjeta">Tarjeta</MenuItem>
-            </TextField>
-
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="h6" className="font-semibold">
-                Total: S/ {Number(total || 0).toFixed(2)}
-              </Typography>
-              <Button type="submit" variant="contained" disabled={isSubmitting}>
-                {isSubmitting ? 'Procesando...' : 'Confirmar pedido'}
-              </Button>
-            </Stack>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-gray-50/50">
+      <CheckoutFlow />
     </div>
   )
 }
