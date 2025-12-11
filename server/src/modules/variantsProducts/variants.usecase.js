@@ -16,7 +16,7 @@ import {
  * @returns {Promise<Array>} Lista de variantes
  */
 const getVariantsProducts = async () => {
-  const variants = await prisma.variantes_producto.findMany({
+  const variants = await prisma.variantes_Producto.findMany({
     where: { deleted_at: null },
     select: VariantDTO,
     orderBy: [{ activo: 'desc' }, { id_variante: 'desc' }],
@@ -31,7 +31,7 @@ const getVariantsProducts = async () => {
  * @returns {Promise<Object|null>} La variante encontrada o null
  */
 const getVariantProductById = async (id) => {
-  const variant = await prisma.variantes_producto.findFirst({
+  const variant = await prisma.variantes_Producto.findFirst({
     where: {
       id_variante: Number.parseInt(id, 10),
       deleted_at: null,
@@ -56,7 +56,7 @@ const createVariantProduct = async (data) => {
     normalizedData.id_tipo_masa,
   )
 
-  const variant = await prisma.variantes_producto.create({
+  const variant = await prisma.variantes_Producto.create({
     data: normalizedData,
     select: VariantDTO,
   })
@@ -87,7 +87,7 @@ const updateVariantProduct = async (id, data) => {
 
   const updatePayload = buildUpdatePayload(currentVariant, finalState, data)
 
-  const variant = await prisma.variantes_producto.update({
+  const variant = await prisma.variantes_Producto.update({
     where: { id_variante: idVariante },
     data: updatePayload,
     select: VariantDTO,
@@ -102,7 +102,7 @@ const updateVariantProduct = async (id, data) => {
  * @returns {Promise<number>} ID de la variante eliminada
  */
 const deleteVariantProduct = async (id) => {
-  const variant = await prisma.variantes_producto.update({
+  const variant = await prisma.variantes_Producto.update({
     where: {
       id_variante: Number.parseInt(id, 10),
     },

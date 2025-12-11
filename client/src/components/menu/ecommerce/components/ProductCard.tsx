@@ -1,7 +1,9 @@
 import { Card, CardMedia, CardContent, Typography, Button, IconButton } from '@mui/material';
 import { Add, FavoriteBorder, Favorite } from '@mui/icons-material';
+import { useMemo, useState } from 'react';
 import { Product } from '../../../../types/pruducts/products.schema';
-import { useState } from 'react';
+import { useVariants } from '../../../../hook/variants/useVariants';
+import AddToCartDrawer from './AddToCartDrawer';
 
 interface ProductCardProps {
     product: Product;
@@ -9,11 +11,28 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const [isFavorite, setIsFavorite] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const { data: variants } = useVariants();
+
+    const variantForProduct = useMemo(() => {
+        if (!variants) return null;
+        return variants.find(v => v.id_producto === product.id_producto) || null;
+    }, [variants, product.id_producto]);
+
+    const priceValue = useMemo(() => {
+        const fromVariant = variantForProduct ? Number(variantForProduct.precio_base || 0) : null;
+        const fromProduct = product.precio_base ? Number(product.precio_base) : (product as any).precio ? Number((product as any).precio) : 0;
+        return fromVariant !== null ? fromVariant : fromProduct;
+    }, [variantForProduct, product]);
 
     // Calculate a fake discount for demo purposes (or use real data if available)
     const hasDiscount = Math.random() > 0.7;
     const discountPercent = 30;
-    const originalPrice = product.precio ? Number(product.precio) * 1.4 : 0;
+    const originalPrice = priceValue ? Number(priceValue) * 1.4 : 0;
+
+    const handleAdd = () => {
+        setOpenDrawer(true);
+    };
 
     return (
         <Card className="h-full flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden border border-gray-100 group bg-white relative">
@@ -35,18 +54,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 </div>
             </div>
 
-            <CardContent className="flex-grow flex flex-col px-5 pb-5 pt-2">
-                <Typography variant="h6" component="h3" className="font-bold text-gray-900 mb-1 leading-tight line-clamp-2 min-h-[3rem]" title={product.nombre}>
+            <CardContent className="grow flex flex-col px-5 pb-5 pt-2">
+                <Typography variant="h6" component="h3" className="font-bold text-gray-900 mb-1 leading-tight line-clamp-2 min-h-12" title={product.nombre}>
                     {product.nombre}
                 </Typography>
 
-                <Typography variant="body2" className="text-gray-500 mb-4 line-clamp-2 text-sm flex-grow">
+                <Typography variant="body2" className="text-gray-500 mb-4 line-clamp-2 text-sm grow">
                     {product.descripcion}
                 </Typography>
 
                 <div className="flex items-center justify-between mt-auto">
                     <div className="flex flex-col">
-                        <span className="text-xl font-extrabold text-gray-900">S/ {product.precio || '0.00'}</span>
+                        <span className="text-xl font-extrabold text-gray-900">S/ {priceValue?.toFixed ? priceValue.toFixed(2) : priceValue || '0.00'}</span>
                         {hasDiscount && (
                             <div className="flex items-center gap-2">
                                 <span className="text-xs text-gray-400 line-through">S/ {originalPrice.toFixed(2)}</span>
@@ -59,11 +78,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         variant="contained"
                         className="bg-[#95c11f] hover:bg-[#84ac1b] text-gray-900 font-bold px-4 py-2 rounded-full shadow-none hover:shadow-md transition-all min-w-[110px]"
                         endIcon={<Add />}
+                        onClick={handleAdd}
                     >
                         AGREGAR
                     </Button>
                 </div>
             </CardContent>
+
+            <AddToCartDrawer open={openDrawer} onClose={() => setOpenDrawer(false)} product={product} />
         </Card>
     );
 };

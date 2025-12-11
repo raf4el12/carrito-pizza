@@ -10,6 +10,6 @@ export const parseId = (id) => {
     return ingredientes.map((ing) => ({
       id_ingrediente: parseId(ing.id_ingrediente),
       posicion: ing.posicion || null,
-      accion: ing.accion.toLowerCase(),
+      accion: (ing.accion || 'extra').toLowerCase(),
     }))
   }

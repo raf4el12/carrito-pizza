@@ -18,7 +18,7 @@ export const validateUniqueVariant = async (
     whereClause.NOT = { id_variante: excludeId }
   }
 
-  const existingVariant = await prisma.variantes_producto.findFirst({
+  const existingVariant = await prisma.variantes_Producto.findFirst({
     where: whereClause,
   })
 
@@ -31,7 +31,7 @@ export const validateUniqueVariant = async (
 }
 
 export const validateVariantExists = async (idVariante) => {
-  const variant = await prisma.variantes_producto.findFirst({
+  const variant = await prisma.variantes_Producto.findFirst({
     where: {
       id_variante: idVariante,
       deleted_at: null,
@@ -55,7 +55,7 @@ export const validateVariantExists = async (idVariante) => {
 }
 
 export const getCurrentVariantForUpdate = async (idVariante) => {
-  const variant = await prisma.variantes_producto.findUnique({
+  const variant = await prisma.variantes_Producto.findUnique({
     where: { id_variante: idVariante },
     select: {
       id_producto: true,

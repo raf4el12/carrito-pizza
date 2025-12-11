@@ -4,7 +4,9 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#000000',
+      main: '#8B4513', // Brick red / Saddle Brown
+      light: '#A0522D', // Sienna (lighter)
+      dark: '#6B3410', // Darker brick
       contrastText: '#ffffff',
     },
     background: {

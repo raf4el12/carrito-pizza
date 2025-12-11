@@ -2,7 +2,9 @@
 
 /* CSS Variables for custom colors */
 :root {
-  --color-primary: #000000;
+  --color-primary: #8B4513;
+  --color-primary-light: #A0522D;
+  --color-primary-dark: #6B3410;
   --color-secondary: #6b7280;
   --color-muted: #9ca3af;
   --color-muted-foreground: #6b7280;
