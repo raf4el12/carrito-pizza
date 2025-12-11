@@ -37,7 +37,7 @@ export const checkClienteExists = async (id_cliente) => {
 }
 
 export const checkVarianteExists = async (id_variante) => {
-  const variante = await prisma.variantes_producto.findFirst({
+  const variante = await prisma.variantes_Producto.findFirst({
     where: { 
       id_variante: parseId(id_variante),
       deleted_at: null 

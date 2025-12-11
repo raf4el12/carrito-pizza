@@ -16,6 +16,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import LoadingPage from './components/commons/LoadingPage.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
+import { CartProvider } from './context/CartContext.tsx'
 import router from './router.tsx'
 import theme from './theme.ts'
 
@@ -57,7 +58,9 @@ root.render(
         <QueryClientProvider client={queryClient}>
           {import.meta.env.MODE !== 'production' && <ReactQueryDevtools />}
           <AuthProvider>
-            <RouterProvider router={router} />
+            <CartProvider>
+              <RouterProvider router={router} />
+            </CartProvider>
           </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>

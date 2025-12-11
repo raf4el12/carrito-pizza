@@ -351,13 +351,13 @@ const ManageReviewsTable = ({ reviewsData = [], onDelete }: ManageReviewsTablePr
                 height: 40,
                 borderRadius: '20px',
                 textTransform: 'none',
-                backgroundColor: '#000',
+                backgroundColor: '#8B4513',
                 color: '#fff',
                 fontWeight: 600,
                 px: 3.5,
                 boxShadow: 'none',
                 '&:hover': {
-                  backgroundColor: '#333',
+                  backgroundColor: '#6B3410',
                   boxShadow: 'none',
                 },
               }}

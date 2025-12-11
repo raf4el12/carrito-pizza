@@ -87,6 +87,12 @@ const MasaTypesPage = lazy(
 const MenuPage = lazy(
     () => import('./pages/menu/MenuPage' /* webpackChunkName: "menu-page" */)
 )
+const CartPage = lazy(
+    () => import('./pages/cart/CartPage' /* webpackChunkName: "cart-page" */)
+)
+const CheckoutPage = lazy(
+    () => import('./pages/checkout/CheckoutPage' /* webpackChunkName: "checkout-page" */)
+)
 
 const router = createBrowserRouter([
     {
@@ -100,6 +106,14 @@ const router = createBrowserRouter([
             {
                 path: 'menu',
                 element: <MenuPage />,
+            },
+            {
+                path: 'cart',
+                element: <CartPage />,
+            },
+            {
+                path: 'checkout',
+                element: <CheckoutPage />,
             },
         ],
     },

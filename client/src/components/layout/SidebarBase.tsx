@@ -92,8 +92,8 @@ export default function SidebarBase() {
         to={item.href}
         className={`flex items-center w-full px-3 py-2 rounded-lg text-left transition ${
           isActive
-            ? 'bg-gray-900 text-white font-semibold'
-            : 'text-gray-700 hover:bg-gray-100'
+            ? 'bg-[#8B4513] text-white font-semibold'
+            : 'text-gray-700 hover:bg-[#f5e6d3]'
         }`}
       >
         <span className="mr-3">{item.icon}</span>
@@ -107,7 +107,7 @@ export default function SidebarBase() {
       {/* Logo */}
       <Link
         to="/admin/dashboard"
-        className="flex items-center mb-8 rounded-lg p-3 text-white bg-black hover:bg-gray-900 transition"
+        className="flex items-center mb-8 rounded-lg p-3 text-white bg-[#8B4513] hover:bg-[#6B3410] transition"
       >
         <span className="mr-3">
           <RestaurantIcon />
