@@ -20,7 +20,7 @@ const steps = [
 
 const CheckoutFlow = () => {
     const [currentStep, setCurrentStep] = useState(1)
-    const { items, total, clearCart } = useCart()
+    const { items, total, refresh } = useCart()
     const { user } = useAuthContext()
     const navigate = useNavigate()
 
@@ -59,17 +59,14 @@ const CheckoutFlow = () => {
                 notas_cliente: deliveryData.notes || null,
             })
 
-            // Assuming response contains the order ID or we just assume success
-            // If the service returns the created order, we might want to show it.
-            // For now, let's assume success.
-
             toast.success('¡Pedido realizado con éxito!')
-            await clearCart() // Clear cart after successful order
-            setOrderId(response?.id_pedido || Date.now()) // Fallback ID
+            await refresh()
+            setOrderId(response?.id_pedido || Date.now())
             setCurrentStep(4)
         } catch (error) {
             console.error('Error placing order:', error)
-            toast.error('Hubo un error al procesar tu pedido. Inténtalo de nuevo.')
+            const errorMessage = error instanceof Error ? error.message : 'Hubo un error al procesar tu pedido'
+            toast.error(errorMessage)
         } finally {
             setIsProcessing(false)
         }

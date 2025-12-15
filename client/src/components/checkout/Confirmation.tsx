@@ -22,15 +22,15 @@ const Confirmation = ({ orderId, onHome }: ConfirmationProps) => {
                 <h4 className="font-semibold text-gray-900 mb-2">¿Qué sigue?</h4>
                 <ul className="text-sm text-gray-600 space-y-2 text-left">
                     <li className="flex items-start gap-2">
-                        <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                        <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
                         Confirmación enviada a tu correo
                     </li>
                     <li className="flex items-start gap-2">
-                        <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                        <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
                         Preparación en cocina (~15 min)
                     </li>
                     <li className="flex items-start gap-2">
-                        <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                        <span className="w-5 h-5 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
                         En camino a tu dirección (~20 min)
                     </li>
                 </ul>

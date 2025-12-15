@@ -60,7 +60,7 @@ const CartReview = ({ onNext }: CartReviewProps) => {
                             key={item.id_carrito}
                             className="group flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100"
                         >
-                            <div className="relative overflow-hidden rounded-lg w-full sm:w-32 h-32 flex-shrink-0">
+                            <div className="relative overflow-hidden rounded-lg w-full sm:w-32 h-32 shrink-0">
                                 <img
                                     src={image}
                                     alt={name}

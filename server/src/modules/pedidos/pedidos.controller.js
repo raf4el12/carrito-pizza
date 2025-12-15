@@ -1,4 +1,4 @@
-import * as pedidosUseCase from './pedidos.usecase.js'
+import pedidosUseCase from './pedidos.usecase.js'
 
 const createPedido = async (req, res) => {
   const pedido = await pedidosUseCase.createPedido(req.body)
