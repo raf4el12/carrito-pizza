@@ -20,7 +20,7 @@ const OrderSummary = ({ currentStep: _currentStep }: OrderSummaryProps) => {
                     return (
                         <div key={item.id_carrito} className="flex justify-between items-start text-sm">
                             <div className="flex gap-3">
-                                <div className="w-5 h-5 bg-orange-100 text-orange-600 rounded flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                <div className="w-5 h-5 bg-orange-100 text-orange-600 rounded flex items-center justify-center text-xs font-bold shrink-0">
                                     {quantity}x
                                 </div>
                                 <span className="text-gray-700 font-medium line-clamp-2">{name}</span>

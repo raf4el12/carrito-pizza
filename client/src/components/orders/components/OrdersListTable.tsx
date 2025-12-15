@@ -14,7 +14,6 @@ import {
 } from '@tanstack/react-table'
 import classnames from 'classnames'
 import Card from '@mui/material/Card'
-import Checkbox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
 import type { ChipProps } from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
@@ -22,17 +21,17 @@ import IconButton from '@mui/material/IconButton'
 import TablePagination from '@mui/material/TablePagination'
 import Typography from '@mui/material/Typography'
 import DebouncedInput from '../../commons/DebouncedInput'
-import type { User } from '../../../types/user/user.schema'
+import type { PedidoListItem } from '../../../types/pedidos/pedidos.schema'
+import { ORDER_STATUSES, PAYMENT_STATUSES } from '../../../types/pedidos/pedidos.schema'
 import tableStyles from '../../../styles/table.module.css'
 
-interface UserListTableProps {
-  userData?: User[]
-  onEdit?: (user: User) => void
-  onDelete?: (user: User) => void
-  onView?: (user: User) => void
+interface OrdersListTableProps {
+  ordersData?: PedidoListItem[]
+  onView?: (order: PedidoListItem) => void
+  onDelete?: (order: PedidoListItem) => void
 }
 
-const columnHelper = createColumnHelper<User>()
+const columnHelper = createColumnHelper<PedidoListItem>()
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value) => {
   const rowValue = String(row.getValue(columnId) ?? '').toLowerCase()
@@ -41,108 +40,122 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value) => {
   return rowValue.includes(searchValue)
 }
 
-const getRoleColor = (rol: User['rol']): ChipProps['color'] => {
-  switch (rol) {
-    case 'administrador':
-      return 'error'
-    case 'repartidor':
-      return 'warning'
-    case 'cliente':
-      return 'info'
-    default:
-      return 'default'
-  }
+const getOrderStatusColor = (estado: string): ChipProps['color'] => {
+  const status = ORDER_STATUSES.find((s) => s.value === estado)
+  return (status?.color as ChipProps['color']) || 'default'
 }
 
-const UserListTable = ({ userData, onEdit, onDelete, onView }: UserListTableProps) => {
-  const data = userData ?? []
+const getPaymentStatusColor = (estado: string): ChipProps['color'] => {
+  const status = PAYMENT_STATUSES.find((s) => s.value === estado)
+  return (status?.color as ChipProps['color']) || 'default'
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('es-PE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date)
+}
+
+const formatCurrency = (amount: number | string) => {
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount
+  return `S/ ${num.toFixed(2)}`
+}
+
+const OrdersListTable = ({ ordersData, onView, onDelete }: OrdersListTableProps) => {
+  const data = ordersData ?? []
   const [globalFilter, setGlobalFilter] = useState('')
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
 
   const handleGlobalFilterChange = useCallback((value: string | number) => {
     setGlobalFilter(String(value))
   }, [])
 
-  const columns: ColumnDef<User, any>[] = useMemo(() => {
+  const columns: ColumnDef<PedidoListItem, any>[] = useMemo(() => {
     return [
+      columnHelper.accessor('id_pedido', {
+        header: '# Pedido',
+        cell: ({ row }) => (
+          <Typography color="text.primary" className="font-bold">
+            #{row.original.id_pedido}
+          </Typography>
+        ),
+      }),
+      columnHelper.accessor('fecha_pedido', {
+        header: 'Fecha',
+        cell: ({ row }) => (
+          <Typography variant="body2" color="text.secondary">
+            {formatDate(row.original.fecha_pedido)}
+          </Typography>
+        ),
+      }),
       {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllRowsSelected()}
-            indeterminate={table.getIsSomeRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            disabled={!row.getCanSelect()}
-            indeterminate={row.getIsSomeSelected()}
-            onChange={row.getToggleSelectedHandler()}
-          />
-        ),
+        id: 'cliente',
+        header: 'Cliente',
+        cell: ({ row }) => {
+          const cliente = row.original.Cliente
+          return (
+            <div>
+              <Typography variant="body2" className="font-medium">
+                {cliente ? `${cliente.nombre} ${cliente.apellido}` : '-'}
+              </Typography>
+            </div>
+          )
+        },
       },
-      columnHelper.accessor('id_usuario', {
-        header: 'ID',
+      columnHelper.accessor('total_pedido', {
+        header: 'Total',
         cell: ({ row }) => (
-          <Typography color="text.primary" className="font-medium">
-            {row.original.id_usuario}
+          <Typography color="text.primary" className="font-bold">
+            {formatCurrency(row.original.total_pedido)}
           </Typography>
         ),
       }),
-      columnHelper.accessor('nombre', {
-        header: 'Nombre',
-        cell: ({ row }) => (
-          <Typography color="text.primary" className="font-medium">
-            {row.original.nombre}
-          </Typography>
-        ),
-      }),
-      columnHelper.accessor('apellido', {
-        header: 'Apellido',
-        cell: ({ row }) => (
-          <Typography color="text.primary" className="font-medium">
-            {row.original.apellido}
-          </Typography>
-        ),
-      }),
-      columnHelper.accessor('email', {
-        header: 'Email',
-        cell: ({ row }) => (
-          <Typography variant="body2" color="text.secondary">
-            {row.original.email}
-          </Typography>
-        ),
-      }),
-      columnHelper.accessor('username', {
-        header: 'Username',
-        cell: ({ row }) => (
-          <Typography variant="body2" color="text.secondary">
-            {row.original.username}
-          </Typography>
-        ),
-      }),
-      columnHelper.accessor('rol', {
-        header: 'Rol',
-        cell: ({ row }) => (
-          <Chip
-            label={row.original.rol}
-            color={getRoleColor(row.original.rol)}
-            size="small"
-          />
-        ),
-      }),
-      columnHelper.accessor('activo', {
+      columnHelper.accessor('estado_pedido', {
         header: 'Estado',
         cell: ({ row }) => (
           <Chip
-            label={row.original.activo ? 'Activo' : 'Inactivo'}
-            color={row.original.activo ? 'success' : 'error'}
+            label={row.original.estado_pedido.replace('_', ' ')}
+            color={getOrderStatusColor(row.original.estado_pedido)}
             size="small"
+            sx={{ textTransform: 'capitalize' }}
           />
         ),
       }),
+      columnHelper.accessor('estado_pago', {
+        header: 'Pago',
+        cell: ({ row }) => (
+          <Chip
+            label={row.original.estado_pago || 'N/A'}
+            color={getPaymentStatusColor(row.original.estado_pago || '')}
+            size="small"
+            sx={{ textTransform: 'capitalize' }}
+          />
+        ),
+      }),
+      columnHelper.accessor('metodo_pago', {
+        header: 'Método',
+        cell: ({ row }) => (
+          <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+            {row.original.metodo_pago?.replace('_', ' ') || '-'}
+          </Typography>
+        ),
+      }),
+      {
+        id: 'repartidor',
+        header: 'Repartidor',
+        cell: ({ row }) => {
+          const repartidor = row.original.Repartidor
+          return (
+            <Typography variant="body2" color={repartidor ? 'text.primary' : 'text.secondary'}>
+              {repartidor ? `${repartidor.nombre} ${repartidor.apellido}` : 'Sin asignar'}
+            </Typography>
+          )
+        },
+      },
       {
         id: 'actions',
         header: 'Acciones',
@@ -150,21 +163,20 @@ const UserListTable = ({ userData, onEdit, onDelete, onView }: UserListTableProp
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             {onView && (
-              <IconButton size="medium" onClick={() => onView(row.original)} title="Ver">
+              <IconButton size="medium" onClick={() => onView(row.original)} title="Ver detalle">
                 <i className="ri-eye-line" style={{ fontSize: '24px', color: '#5271FF' }} />
               </IconButton>
             )}
-            <IconButton size="medium" onClick={() => onEdit?.(row.original)} title="Editar">
-              <i className="ri-edit-box-line" style={{ fontSize: '24px', color: '#5271FF' }} />
-            </IconButton>
-            <IconButton size="medium" onClick={() => onDelete?.(row.original)} title="Eliminar">
-              <i className="ri-delete-bin-6-line" style={{ fontSize: '24px', color: '#FF3535' }} />
-            </IconButton>
+            {onDelete && row.original.estado_pedido === 'pendiente' && (
+              <IconButton size="medium" onClick={() => onDelete(row.original)} title="Eliminar">
+                <i className="ri-delete-bin-6-line" style={{ fontSize: '24px', color: '#FF3535' }} />
+              </IconButton>
+            )}
           </div>
         ),
       },
     ]
-  }, [onDelete, onEdit, onView])
+  }, [onView, onDelete])
 
   const table = useReactTable({
     data,
@@ -174,15 +186,13 @@ const UserListTable = ({ userData, onEdit, onDelete, onView }: UserListTableProp
     },
     state: {
       globalFilter,
-      rowSelection,
     },
     initialState: {
       pagination: {
         pageSize: 10,
       },
+      sorting: [{ id: 'fecha_pedido', desc: true }],
     },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -197,10 +207,9 @@ const UserListTable = ({ userData, onEdit, onDelete, onView }: UserListTableProp
         <DebouncedInput
           value={globalFilter ?? ''}
           onChange={handleGlobalFilterChange}
-          placeholder="Buscar usuario..."
+          placeholder="Buscar pedido..."
           className="max-sm:is-full"
         />
-        <div className="flex items-center max-sm:flex-col gap-4 max-sm:is-full is-auto" />
       </div>
       <div className="overflow-x-auto">
         <table className={tableStyles.table}>
@@ -236,7 +245,7 @@ const UserListTable = ({ userData, onEdit, onDelete, onView }: UserListTableProp
             <tbody>
               <tr>
                 <td colSpan={table.getVisibleFlatColumns().length} className="text-center">
-                  No hay datos disponibles
+                  No hay pedidos disponibles
                 </td>
               </tr>
             </tbody>
@@ -279,4 +288,4 @@ const UserListTable = ({ userData, onEdit, onDelete, onView }: UserListTableProp
   )
 }
 
-export default UserListTable
+export default OrdersListTable

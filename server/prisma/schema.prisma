@@ -74,6 +74,26 @@ enum TransactionStatus {
   pendiente
 }
 
+enum NotificationType {
+  pedido_confirmado
+  pedido_en_preparacion
+  pedido_en_camino
+  pedido_entregado
+  pedido_cancelado
+  promocion
+  general
+}
+
+enum DiaSemana {
+  domingo
+  lunes
+  martes
+  miercoles
+  jueves
+  viernes
+  sabado
+}
+
 model Usuarios {
   id_usuario             Int                              @id @default(autoincrement())
   nombre                 String                           @db.VarChar(100)
@@ -95,6 +115,8 @@ model Usuarios {
   Historial_Cambios      Historial_Estado_Pedido[]
   Tokens_Recuperacion    tokens_recuperacion_contrasena[]
   Resenas                Resenas[]
+  Direcciones            Direcciones_Entrega[]
+  Notificaciones         Notificaciones[]
 
   @@index([activo])
   @@index([deleted_at])
@@ -115,19 +137,20 @@ model Categorias {
 }
 
 model Productos {
-  id_producto    Int                  @id @default(autoincrement())
-  id_categoria   Int
-  nombre         String               @db.VarChar(255)
-  descripcion    String?              @db.Text
-  imagen_url     String?              @db.VarChar(255)
-  precio_base    Decimal              @default(0) @db.Decimal(10, 2)
-  estado         ProductStatus        @default(activo)
-  fecha_creacion DateTime             @default(now()) @db.Timestamp(0)
-  updated_at     DateTime             @default(now()) @updatedAt @db.Timestamp(0)
-  deleted_at     DateTime?            @db.DateTime(0)
-  Categoria      Categorias           @relation(fields: [id_categoria], references: [id_categoria])
-  Variantes      Variantes_Producto[]
-  Resenas        Resenas[]
+  id_producto        Int                  @id @default(autoincrement())
+  id_categoria       Int
+  nombre             String               @db.VarChar(255)
+  descripcion        String?              @db.Text
+  imagen_url         String?              @db.VarChar(255)
+  precio_base        Decimal              @default(0) @db.Decimal(10, 2)
+  tiempo_preparacion Int?                 // Tiempo estimado en minutos (opcional)
+  estado             ProductStatus        @default(activo)
+  fecha_creacion     DateTime             @default(now()) @db.Timestamp(0)
+  updated_at         DateTime             @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at         DateTime?            @db.DateTime(0)
+  Categoria          Categorias           @relation(fields: [id_categoria], references: [id_categoria])
+  Variantes          Variantes_Producto[]
+  Resenas            Resenas[]
 
   @@index([estado])
   @@index([deleted_at])
@@ -234,15 +257,20 @@ model Pedidos {
   id_repartidor          Int?
   id_cupon_aplicado      Int?
   descuento_aplicado     Decimal                   @default(0.00) @db.Decimal(10, 2)
+  costo_envio            Decimal?                  @default(0.00) @db.Decimal(10, 2) // Costo de delivery (opcional)
+  id_zona                Int?                      // Zona de delivery (opcional)
   metodo_pago            PaymentMethod
   estado_pago            PaymentStatus             @default(pendiente)
   fecha_entrega_estimada DateTime?                 @db.DateTime(0)
   Cliente                Usuarios                  @relation("ClientePedidos", fields: [id_cliente], references: [id_usuario])
   Repartidor             Usuarios?                 @relation("RepartidorPedidos", fields: [id_repartidor], references: [id_usuario])
   Cupon                  Cupones?                  @relation(fields: [id_cupon_aplicado], references: [id_cupon])
+  Zona                   Zonas_Delivery?           @relation(fields: [id_zona], references: [id_zona])
   Detalles               Detalle_Pedido[]
   Pagos                  Pagos[]
   Historial_Estados      Historial_Estado_Pedido[]
+
+  @@index([id_zona])
 }
 
 model Detalle_Pedido {
@@ -347,4 +375,81 @@ model tokens_recuperacion_contrasena {
   fecha_expiracion DateTime @db.DateTime(0)
   usado            Boolean  @default(false)
   Usuario          Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+}
+
+// ==========================================
+// MÓDULOS NUEVOS PARA MVP COMPLETO
+// ==========================================
+
+// 📍 Direcciones de Entrega (múltiples por usuario)
+model Direcciones_Entrega {
+  id_direccion      Int      @id @default(autoincrement())
+  id_usuario        Int
+  alias             String   @db.VarChar(50) // "Casa", "Trabajo", etc.
+  direccion         String   @db.VarChar(255)
+  referencia        String?  @db.VarChar(255) // "Frente al parque", etc.
+  latitud           Decimal? @db.Decimal(10, 8)
+  longitud          Decimal? @db.Decimal(11, 8)
+  es_predeterminada Boolean  @default(false)
+  activo            Boolean  @default(true)
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  Usuario           Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@index([id_usuario])
+  @@index([activo])
+}
+
+// ⚙️ Configuración General del Negocio (clave-valor)
+model Configuracion_Negocio {
+  id_config   Int      @id @default(autoincrement())
+  clave       String   @unique @db.VarChar(100) // ej: "nombre_negocio", "telefono", "email_contacto"
+  valor       String   @db.Text
+  descripcion String?  @db.VarChar(255)
+  updated_at  DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
+
+// 🕐 Horarios de Atención
+model Horarios_Atencion {
+  id_horario    Int       @id @default(autoincrement())
+  dia_semana    DiaSemana
+  hora_apertura String    @db.VarChar(5) // "09:00"
+  hora_cierre   String    @db.VarChar(5) // "23:00"
+  activo        Boolean   @default(true)
+  created_at    DateTime  @default(now()) @db.Timestamp(0)
+  updated_at    DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+
+  @@unique([dia_semana])
+}
+
+// 🚚 Zonas de Delivery con costo de envío
+model Zonas_Delivery {
+  id_zona              Int       @id @default(autoincrement())
+  nombre               String    @db.VarChar(100) // "Centro", "Zona Norte", etc.
+  descripcion          String?   @db.VarChar(255)
+  costo_envio          Decimal   @db.Decimal(10, 2)
+  tiempo_estimado      Int?      // Tiempo en minutos
+  pedido_minimo        Decimal?  @db.Decimal(10, 2) // Monto mínimo para delivery a esta zona
+  activo               Boolean   @default(true)
+  created_at           DateTime  @default(now()) @db.Timestamp(0)
+  updated_at           DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+  Pedidos              Pedidos[]
+
+  @@index([activo])
+}
+
+// 🔔 Notificaciones para usuarios
+model Notificaciones {
+  id_notificacion Int              @id @default(autoincrement())
+  id_usuario      Int
+  tipo            NotificationType
+  titulo          String           @db.VarChar(150)
+  mensaje         String           @db.Text
+  leida           Boolean          @default(false)
+  id_pedido       Int?             // Referencia opcional al pedido relacionado
+  created_at      DateTime         @default(now()) @db.Timestamp(0)
+  Usuario         Usuarios         @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@index([id_usuario, leida])
+  @@index([created_at])
 }

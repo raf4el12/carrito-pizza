@@ -84,6 +84,12 @@ const MasaTypesPage = lazy(
             './pages/masa-types/MasaTypesPage' /* webpackChunkName: "masa-types-page" */
         )
 )
+const OrdersListPage = lazy(
+    () =>
+        import(
+            './pages/admin/OrdersListPage' /* webpackChunkName: "orders-page" */
+        )
+)
 const MenuPage = lazy(
     () => import('./pages/menu/MenuPage' /* webpackChunkName: "menu-page" */)
 )
@@ -173,6 +179,10 @@ const router = createBrowserRouter([
                     {
                         path: 'tipos-masa',
                         element: <MasaTypesPage />,
+                    },
+                    {
+                        path: 'pedidos',
+                        element: <OrdersListPage />,
                     },
                 ],
             },
