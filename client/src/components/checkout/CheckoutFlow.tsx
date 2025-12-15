@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import pedidosService from '../../shared/services/pedidos.service'
 import useAuthContext from '../../context/AuthContext'
+import type { DeliveryData } from '../../types/checkout/checkout.schema'
 
 const steps = [
     { id: 1, title: 'Carrito', icon: FiShoppingCart },
@@ -24,7 +25,7 @@ const CheckoutFlow = () => {
     const { user } = useAuthContext()
     const navigate = useNavigate()
 
-    const [deliveryData, setDeliveryData] = useState({
+    const [deliveryData, setDeliveryData] = useState<DeliveryData>({
         address: '',
         notes: '',
     })
@@ -37,10 +38,7 @@ const CheckoutFlow = () => {
             toast.error('Tu carrito está vacío')
             return
         }
-        if (currentStep === 2 && !deliveryData.address.trim()) {
-            toast.error('Por favor ingresa una dirección de entrega')
-            return
-        }
+        // La validación del paso 2 (entrega) se maneja en DeliveryForm con zod
         setCurrentStep((prev) => Math.min(prev + 1, 4))
     }
 
