@@ -16,7 +16,6 @@ import {
 } from 'react-icons/fi'
 import { usePedidos } from '../../hook/pedidos/usePedidos'
 import { useProducts } from '../../hook/products/useProducts'
-import type { PedidoListItem } from '../../types/pedidos/pedidos.schema'
 
 // Colores para estados de pedidos
 const estadoColors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
